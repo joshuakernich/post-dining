@@ -94,7 +94,7 @@
       overflow: hidden;
     }
 
-    .box:before, .ingredient:before{
+    .ing:before, .box:before, .ingredient:before{
       content: "";
 
       position: absolute;
@@ -109,7 +109,7 @@
 
     }
 
-    .box:after, .ingredient:after{
+    .ing:after, .box:after, .ingredient:after{
       content: "";
 
       position: absolute;
@@ -296,6 +296,7 @@
       margin: 0px;
       list-style: none;
       transition: all 0.5s;
+      z-index: 4;
     }
 
     .breadcrumbs li{
@@ -307,6 +308,8 @@
       padding-bottom: 30px;
       text-shadow: 0px 0px 2px white;
       vertical-align: bottom;
+      transition: all 0.5s;
+      text-align: center;
     }
 
     .breadcrumbs li.active{
@@ -334,43 +337,53 @@
 
 
 
+    .ing{
+      width: 100px;
+      height: 0px;
+      display: block;
+      position: relative;
+      margin: auto;
+      background-position:center;
+      background-size: contain;
+      background-repeat: no-repeat;
+      transition: all 0.5s;
+      opacity: 0;
+    }
+
+    .breadcrumbs li.populated .ing{
+      height: 100px;
+      opacity: 1;
+    }
+
+    .ing-summary{
+      width: 100%;
+      height: 200px;
+      
+      background-image: url(./ing/cracker.png);
+      background-position:center;
+      background-size: contain;
+      background-repeat: no-repeat;
+      position: relative;
+
+      position: absolute;
+      top: 0px;
+      left: 0px;
+    }
+
+    .summary{
+      width: 50%;
+      position: absolute;
+      bottom: 400px;
+      left: 0px;
+    }
 
   </style>
  
   <script type="text/javascript">
     $(function(){
 
-      var layers = 
-      [
-        [
-          {type:'cracker',cost:1,name:'Wafer',src:'./cracker.png'},
-          {type:'cracker',cost:2,name:'Crispbread'},
-          {type:'cracker',cost:3,name:'Bread'}
-        ],
-        [
-          {type:'cheese',cost:1,name:'Cheese',src:'./cheese.png'},
-          {type:'cheese',cost:2,name:'Salmon'},
-          {type:'cheese',cost:3,name:'Lamb'}
-        ],
-        [
-          {type:'aoili',cost:1,name:'Parsley',src:'./parsley.png'},
-          {type:'aoili',cost:2,name:'Salsa'},
-          {type:'aoili',cost:3,name:'Aioli'}
-        ],
-      ]
 
-      /*for(var i=0; i<layers.length; i++){
-        var $layer = $('<div class="hamburger-layer">').prependTo('.hamburger');
-        for(var j=0; j<layers[i].length; j++){
-
-          var k = j%layers[i].length;
-          var $i = $('<div class="ingredient">').appendTo($layer).addClass(layers[i][k].type);
-
-          if(layers[i][k].src) $i.css({'background-image':'url('+layers[i][k].src+')'})
-        }
-      }*/
-
-      $('.screen').hide().first().show();
+      toScreen(0);
 
       $('.action-to-next-screen').click(function(){
         toNextScreen(this);
@@ -378,13 +391,14 @@
 
       function toNextScreen(child){
         var idx = $('.screen').index($(child).closest('.screen'));
-        var $s = $('.screen').hide().eq(idx+1).show();
+        toScreen(idx+1);
+      }
+
+      function toScreen(idx){
+        var $s = $('.screen').hide().eq(idx).show();
 
         if($s.is('.screen-selector')){
           
-          $('.wd-alloc').removeClass('hidden');
-          $('.breadcrumbs').removeClass('hidden');
-
           $s.find('h1').css({position:'relative',top:-200}).animate({top:0});
           $s.find('.ingredient').each(function(i){
 
@@ -405,6 +419,22 @@
             $(this).find('.wd').css({position:'relative',left:500}).delay(2500+(i+1)*1000).animate({left:0});
           });
    
+        } else if($s.is('.screen-checkout')){
+          $s.find('.ing-summary').eq(0).css({top:-500}).delay(1000).animate({top:0});
+          $s.find('.ing-summary').eq(1).css({top:-500}).delay(1500).animate({top:-70});
+          $s.find('.ing-summary').eq(2).css({top:-500}).delay(2000).animate({top:-140});
+        }
+
+        if($s.is('.screen-breadcrumbed')){
+          $('.wd-alloc').removeClass('hidden');
+          $('.breadcrumbs').removeClass('hidden');
+          
+          var idx = $('.screen-breadcrumbed').index($s);
+          $('.breadcrumbs li').removeClass('active').eq(idx).addClass('active');
+
+        } else {
+          $('.wd-alloc').addClass('hidden');
+          $('.breadcrumbs').addClass('hidden');
         }
       }
 
@@ -414,11 +444,20 @@
       })
 
       $('.ingredient button').click(function(){
-        $(this).closest('.ingredient').addClass('selected');
+        var $ing = $(this).closest('.ingredient').addClass('selected');
+        var idxBreadcrumb = $('.screen-breadcrumbed').index($(this).closest('.screen-breadcrumbed'));
+
+        var img = $ing.find('.ingredient-img').css('background-image');
+
+        $('.breadcrumbs li').eq(idxBreadcrumb).addClass('populated');
+        $('.ing').eq(idxBreadcrumb).css({'background-image':img});
+        $('.ing-summary').eq(idxBreadcrumb).css({'background-image':img});
+
+
         var me = this;
         setTimeout(function(){
           toNextScreen(me);
-        },500)
+        },1000)
       })
     })
   </script>
@@ -463,7 +502,7 @@
         </div>
       </div>
     </div>
-    <div class="screen screen-selector">
+    <div class="screen screen-selector screen-breadcrumbed">
 
         <h1>Select a <b>Carbohydrate</b></h1>
 
@@ -487,7 +526,7 @@
           </div>
 
     </div>
-    <div class="screen screen-selector">
+    <div class="screen screen-selector screen-breadcrumbed">
 
         <h1>Select a <b>Protein</b></h1>
 
@@ -511,7 +550,7 @@
           </div>
         
     </div>
-    <div class="screen screen-selector">
+    <div class="screen screen-selector screen-breadcrumbed">
         
         <h1>Select a <b>Topping</b></h1>
 
@@ -535,12 +574,16 @@
           </div>
         
     </div>
-    <div class="screen checkout">
-
+    <div class="screen screen-checkout screen-breadcrumbed">
+      <div class="summary">
+        <div class="ing-summary" style="background-image: url(./ing/parsley.png)"></div>
+        <div class="ing-summary" style="background-image: url(./ing/lamb.png)"></div>
+        <div class="ing-summary"></div>
+      </div>
     </div>
     <div class="wd-alloc hidden">152</div>
     <ul class="breadcrumbs hidden">
-      <li class="active">Carbohydrate</li><li>Protein</li><li>Topping</li><li>Checkout</li>
+      <li class="active">Carbohydrate<div class="ing"></div></li><li>Protein<div class="ing"></div></li><li>Topping<div class="ing"></div></li><li>Checkout</li>
     </ul>
   </div>
 </body>
