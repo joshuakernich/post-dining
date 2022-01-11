@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+   <script type="text/javascript" src='./jq.js'></script>
+
+  <style type="text/css">
+
+    @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+
+    body{
+      padding: 0px;
+      margin: 0px;
+      background: black;
+      font-family: 'VT323', monospace;
+      font-size: 30px;
+      color: orange;
+      text-shadow: 0px 0px 5px orange;
+    }
+
+    h1{
+      margin: 0px;
+      padding: 0px;
+    }
+
+    button{
+      font-family: inherit;
+      font-size: inherit;
+      color: inherit;
+      background: white;
+      border: none;
+      padding: 10px;
+      width: calc( 100% - 20px );
+      margin: 10px;
+
+      border: 1px solid orange;
+      text-transform: uppercase;
+      background: #33ddff;
+      color: white;
+      text-shadow: 0px 0px 5px white;
+    }
+
+    .hamburger{
+      margin: 5vh 0px;
+
+    }
+
+    .hamburger-layer{
+      
+      white-space: nowrap;
+      overflow-x: scroll;
+    }
+
+    .ingredient{
+      display: inline-block;
+      white-space: normal;
+
+      text-align: center;
+      width: 250px;
+      vertical-align: top;
+      position: relative;
+      overflow: hidden;
+      height: 270px;
+      transition: width 0.5s, height 0.5s;
+    }
+
+    .ingredient.static{
+      transition: none;
+    }
+
+    .ingredient h2{
+      white-space: nowrap;
+      line-height: 70px;
+      margin: 0px;
+      padding: 0px;
+    }
+
+    .ingredient-img{
+      width: 100%;
+      height: 200px;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: 90%;
+    }
+
+
+    .box{
+      width: 500px;
+      position: relative;
+      display: inline-block;
+      background: rgba(255,255,255,0.7);
+      padding: 20px;
+      overflow: hidden;
+    }
+
+    .box:before, .ingredient:before{
+      content: "";
+
+      position: absolute;
+      left: 0px;
+      top: 0px;
+      bottom: 0px;
+
+      width: 20px;
+      border: 2px solid orange;
+      border-right: 0px;
+      display: block;
+
+    }
+
+    .box:after, .ingredient:after{
+      content: "";
+
+      position: absolute;
+      right: 0px;
+      top: 0px;
+      bottom: 0px;
+
+      width: 20px;
+      border: 2px solid orange;
+      border-left: 0px;
+      display: block;
+    }
+
+    .ingredient p{
+      text-align: left;
+      padding: 0px 20px; 
+      font-size: 20px;
+      margin: 0px;
+    }
+
+    .ingredient.active{
+      height: 365px;
+      width: 420px;
+      background: white;
+    }
+
+    .ingredient.selected{
+      background: orange;
+      color: white;
+    }
+
+    button{
+      position: relative;
+    }
+
+    button:after{
+      content: ">";
+      position: absolute;
+      right: 0px;
+      width: 40px;
+      text-align: center;
+      display: block;
+      top: 0px;
+      line-height: 50px;
+
+    }
+
+
+
+    .screen{
+      width: 100%;
+      height: 100%;
+      position: relative;
+      box-sizing: border-box;
+    }
+
+    .layer{
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      width: 100%;
+      height: 100%;
+      background-size: 100%;
+      background-position: center;
+      box-sizing: border-box;
+      text-align: center;
+    }
+
+    .device{
+      width: 90vw;
+      height: 90vh;
+      position: absolute;
+      top: 5vh;
+      left: 5vw;
+     
+      background: #f5f5f5;
+      overflow: hidden;
+
+      
+    }
+
+    .device:after{
+      content: "";
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      width: 100%;
+      height: 100%;
+      display: block;
+      background: url('./scanlines.png');
+      background-size: 100% 100%;
+      pointer-events: none;
+
+      
+    }
+
+    b{
+      font-weight: normal;
+      background: #33ddff;
+      color: white;
+      text-shadow: 0px 0px 5px white;
+    }
+
+    .wd{
+      font-weight: normal;
+      background: #33ddff;
+      color: white;
+      text-shadow: 0px 0px 5px white;
+      font-size: 35px;
+      display: inline-block;
+      padding: 0px 5px;
+      line-height: 40px;
+    } 
+
+    .wd:before, .wd-alloc:before{
+      content: "";
+      width: 20px;
+      height: 25px;
+      background-image: url('./water-dollar-white.png');
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      display: inline-block;
+      vertical-align: middle;
+      position: relative;
+      top: -3px;
+    }
+
+    .wd.neg{
+      padding-left: 20px;
+      background: pink;
+    }
+
+    .wd.total{
+      background: red;
+    }
+
+    .wd.neg:after{
+      content: "-";
+      position: absolute;
+      left: 5px;
+      top: 0px;
+    }
+
+    .screen-selector{
+      padding: 50px 100px;
+    }
+
+    .screen-selector h1{
+      margin-bottom: 10px;
+    }
+
+    .wd-alloc{
+      position: absolute;
+      right: 100px;
+      top: 0px;
+      background: red;
+      display: inline-block;
+      color: white;
+      text-shadow: 0px 0px 5px white;
+      font-size: 50px;
+      padding: 10px 10px 0px;
+      transition: all 0.5s;
+    }
+
+    .wd-alloc:before{
+      width: 30px;
+      height: 40px;
+    }
+
+    .wd-alloc.hidden{
+      top: -80px;
+    }
+
+    .breadcrumbs.hidden{
+      bottom: -70px;
+    }
+
+    .breadcrumbs{
+      position: absolute;
+      bottom: 0px;
+      left: 100px;
+      padding: 0px;
+      margin: 0px;
+      list-style: none;
+      transition: all 0.5s;
+    }
+
+    .breadcrumbs li{
+      padding: 0px 10px;
+      margin: 0px 1px;
+      background: #999;
+      color: white;
+      display: inline-block;
+      padding-bottom: 30px;
+      text-shadow: 0px 0px 2px white;
+      vertical-align: bottom;
+    }
+
+    .breadcrumbs li.active{
+      background: orange;
+      padding-bottom: 40px;
+    }
+
+    .wd-chart{
+      list-style: none;
+      padding: 0px;
+      margin: 0px;
+    }
+
+    .wd-chart li{
+      padding: 0px;
+      text-align: left;
+    }
+
+    .wd-stat{
+      width: 70%;
+      text-align: right;
+      display: inline-block;
+      margin-right: 10px;
+    }
+
+
+
+
+  </style>
+ 
+  <script type="text/javascript">
+    $(function(){
+
+      var layers = 
+      [
+        [
+          {type:'cracker',cost:1,name:'Wafer',src:'./cracker.png'},
+          {type:'cracker',cost:2,name:'Crispbread'},
+          {type:'cracker',cost:3,name:'Bread'}
+        ],
+        [
+          {type:'cheese',cost:1,name:'Cheese',src:'./cheese.png'},
+          {type:'cheese',cost:2,name:'Salmon'},
+          {type:'cheese',cost:3,name:'Lamb'}
+        ],
+        [
+          {type:'aoili',cost:1,name:'Parsley',src:'./parsley.png'},
+          {type:'aoili',cost:2,name:'Salsa'},
+          {type:'aoili',cost:3,name:'Aioli'}
+        ],
+      ]
+
+      /*for(var i=0; i<layers.length; i++){
+        var $layer = $('<div class="hamburger-layer">').prependTo('.hamburger');
+        for(var j=0; j<layers[i].length; j++){
+
+          var k = j%layers[i].length;
+          var $i = $('<div class="ingredient">').appendTo($layer).addClass(layers[i][k].type);
+
+          if(layers[i][k].src) $i.css({'background-image':'url('+layers[i][k].src+')'})
+        }
+      }*/
+
+      $('.screen').hide().first().show();
+
+      $('.action-to-next-screen').click(function(){
+        toNextScreen(this);
+      })
+
+      function toNextScreen(child){
+        var idx = $('.screen').index($(child).closest('.screen'));
+        var $s = $('.screen').hide().eq(idx+1).show();
+
+        if($s.is('.screen-selector')){
+          
+          $('.wd-alloc').removeClass('hidden');
+          $('.breadcrumbs').removeClass('hidden');
+
+          $s.find('h1').css({position:'relative',top:-200}).animate({top:0});
+          $s.find('.ingredient').each(function(i){
+
+            $(this).addClass('static').width(0).height(0).delay((i+1)*300).animate({width:250,height:10},300).delay(100).animate({height:270},300,function(){
+              $(this).removeClass('static').css({width:'',height:''});
+            });
+
+
+          })
+        } else if($s.is('.screen-alloc')){
+          $s.find('.box').height(0).animate({height:120})
+          .delay(800).animate({height:200})
+          .delay(800).animate({height:410})
+          .delay(6000).animate({height:490})
+
+          $s.find('.wd-chart li').each(function(i){
+            $(this).find('.wd-stat').css({position:'relative',left:-500}).delay(2000+(i+1)*1000).animate({left:0});
+            $(this).find('.wd').css({position:'relative',left:500}).delay(2500+(i+1)*1000).animate({left:0});
+          });
+   
+        }
+      }
+
+      $('.ingredient').click(function(){
+        $(this).closest('.screen').find('.ingredient').removeClass('active');
+        $(this).addClass('active');
+      })
+
+      $('.ingredient button').click(function(){
+        $(this).closest('.ingredient').addClass('selected');
+        var me = this;
+        setTimeout(function(){
+          toNextScreen(me);
+        },500)
+      })
+    })
+  </script>
+</head>
+<body>
+  <div class="device">
+    <div class="screen">
+      <div class="layer" style="opacity:0.2;background-image: url(./globe-orange.gif)"></div>
+      <!--div class="layer" style="background-image: url(./play-glitch.gif);opacity: 0.1;"></div-->
+      <!--div class="layer" style="background-position:570px;mix-blend-mode: difference;background-image: url(./spinning-globe-white.gif);"></div-->
+
+      <div class="layer" style="padding: 50px;text-align: center;">
+        <br><br><br><br><br>
+        <div class="box">
+         
+          <img width="90"style="vertical-align:middle;display: inline-block;" src='./water-dollar-symbol.png'>
+          <div style="vertical-align:middle;display:inline-block;text-align:center;">
+            <p style="font-size:180px;line-height:100px;margin:0px;">GWAT</p>
+            <p style="margin:10px;font-size: 22px;">Global Water Allocation Trust</p>
+          </div>
+          <br>
+          <button class="action-to-next-screen">Request Network Access</button>
+        </div>
+      </div>
+      
+    </div>
+    <div class="screen screen-alloc">
+       <div class="layer" style="opacity:0.6;background-image: url(./ripples.gif)"></div>
+       <div class="layer">
+        <br><br>
+        <div class="box">
+          <h1>Calculating <b> personal water allocation</b>...</h1>
+          <p>WORLD stockpile <span class='wd'>89,582,618,271</span></p>
+          <ul class="wd-chart">
+            <li><span class='wd-stat'>Teir 3 precariat</span><span class='wd'>212</span></li>
+            <li><span class='wd-stat'>Shower 8:37:12-9:12:27</span><span class='wd neg'>37</span></li>
+            <li><span class='wd-stat'>Faucet 9:15:02-9:15.04</span><span class='wd neg'>6</span></li>
+            <li><span class='wd-stat'>Faucet 10:12:54-10:12.59</span><span class='wd neg'>8</span></li>
+            <li><span class='wd-stat'>TOTAL ALLOCATION</span><span class='wd total'>152</span></li>
+          </ul>
+          <button class="action-to-next-screen">REDEEM ALLOCATION</button>
+        </div>
+      </div>
+    </div>
+    <div class="screen screen-selector">
+
+        <h1>Select a <b>Carbohydrate</b></h1>
+
+          <div class="ingredient">
+            <div class="ingredient-img" style="background-image:url(./ing/wafer.png)"></div>
+            <h2>Wafer <span class="wd">12</span></h2>
+            <p>A delicate cracker with a crunchy texture.</p>
+            <button>Confirm</button>
+          </div>
+          <div class="ingredient">
+            <div class="ingredient-img" style="background-image:url(./ing/crispbread.png)"></div>
+            <h2>Crispbread <span class="wd">32</span></h2>
+            <p>Sun-ripened maize, popped and pressed.</p>
+            <button>Confirm</button>
+          </div>
+          <div class="ingredient">
+            <div class="ingredient-img" style="background-image:url(./ing/bread.png)"></div>
+            <h2>Bread <span class="wd">96</span></h2>
+            <p>Wheat dough, ground, rested, and baked.</p>
+            <button>Confirm</button>
+          </div>
+
+    </div>
+    <div class="screen screen-selector">
+
+        <h1>Select a <b>Protein</b></h1>
+
+          <div class="ingredient">
+            <div class="ingredient-img" style="background-image:url(./ing/cheese.png)"></div>
+            <h2>Cheese <span class="wd">12</span></h2>
+            <p>Cow nipple juice and some bacteria.</p>
+            <button>Confirm</button>
+          </div>
+          <div class="ingredient">
+            <div class="ingredient-img" style="background-image:url(./ing/salmon.png)"></div>
+            <h2>Salmon <span class="wd">32</span></h2>
+            <p>Farm-grown, caught, and smoked.</p>
+            <button>Confirm</button>
+          </div>
+          <div class="ingredient">
+            <div class="ingredient-img" style="background-image:url(./ing/lamb.png)"></div>
+            <h2>Lamb <span class="wd">96</span></h2>
+            <p>Farm raised, slaughtered, and aged.</p>
+            <button>Confirm</button>
+          </div>
+        
+    </div>
+    <div class="screen screen-selector">
+        
+        <h1>Select a <b>Topping</b></h1>
+
+          <div class="ingredient">
+            <div class="ingredient-img" style="background-image:url(./ing/parsley.png)"></div>
+            <h2>Parsley <span class="wd">12</span></h2>
+            <p>A little bitter, leafy thingo.</p>
+            <button>Confirm</button>
+          </div>
+          <div class="ingredient">
+            <div class="ingredient-img" style="background-image:url(./ing/salsa.png)"></div>
+            <h2>Salsa <span class="wd">32</span></h2>
+            <p>A blob of chunky, red sunshine.</p>
+            <button>Confirm</button>
+          </div>
+          <div class="ingredient">
+            <div class="ingredient-img" style="background-image:url(./ing/aoili.png)"></div>
+            <h2>Aoili <span class="wd">96</span></h2>
+            <p>Creamy, eggy white gloop.</p>
+            <button>Confirm</button>
+          </div>
+        
+    </div>
+    <div class="screen checkout">
+
+    </div>
+    <div class="wd-alloc hidden">152</div>
+    <ul class="breadcrumbs hidden">
+      <li class="active">Carbohydrate</li><li>Protein</li><li>Topping</li><li>Checkout</li>
+    </ul>
+  </div>
+</body>
+</html>
