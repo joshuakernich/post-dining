@@ -16,7 +16,6 @@
       font-family: 'VT323', monospace;
       font-size: 30px;
       color: orange;
-      text-shadow: 0px 0px 5px orange;
     }
 
     h1{
@@ -38,7 +37,6 @@
       text-transform: uppercase;
       background: #33ddff;
       color: white;
-      text-shadow: 0px 0px 5px white;
     }
 
     .hamburger{
@@ -57,11 +55,11 @@
       white-space: normal;
 
       text-align: center;
-      width: 250px;
+      width: 220px;
       vertical-align: top;
       position: relative;
       overflow: hidden;
-      height: 270px;
+      height: 200px;
       transition: width 0.5s, height 0.5s;
     }
 
@@ -131,8 +129,8 @@
     }
 
     .ingredient.active{
-      height: 365px;
-      width: 420px;
+      height: 360px;
+      width: 400px;
       background: white;
     }
 
@@ -179,11 +177,14 @@
     }
 
     .device{
-      width: 90vw;
-      height: 90vh;
+      width: 1100px;
+      height: 620px;
       position: absolute;
-      top: 5vh;
-      left: 5vw;
+      top: 0px;
+      left: 0px;
+      right: 0px;
+      bottom: 0px;
+      margin: auto;
      
       background: #f5f5f5;
       overflow: hidden;
@@ -210,14 +211,12 @@
       font-weight: normal;
       background: #33ddff;
       color: white;
-      text-shadow: 0px 0px 5px white;
     }
 
     .wd{
       font-weight: normal;
       background: #33ddff;
       color: white;
-      text-shadow: 0px 0px 5px white;
       font-size: 35px;
       display: inline-block;
       padding: 0px 5px;
@@ -269,7 +268,6 @@
       background: red;
       display: inline-block;
       color: white;
-      text-shadow: 0px 0px 5px white;
       font-size: 50px;
       padding: 10px 10px 0px;
       transition: all 0.5s;
@@ -296,7 +294,7 @@
       margin: 0px;
       list-style: none;
       transition: all 0.5s;
-      z-index: 4;
+
     }
 
     .breadcrumbs li{
@@ -305,8 +303,7 @@
       background: #999;
       color: white;
       display: inline-block;
-      padding-bottom: 30px;
-      text-shadow: 0px 0px 2px white;
+      padding-bottom: 20px;
       vertical-align: bottom;
       transition: all 0.5s;
       text-align: center;
@@ -351,7 +348,7 @@
     }
 
     .breadcrumbs li.populated .ing{
-      height: 100px;
+      height: 80px;
       opacity: 1;
     }
 
@@ -377,17 +374,78 @@
       left: 0px;
     }
 
+    .summary-box{
+      width:300px;
+      height:310px;
+      position: absolute;
+      left:50%;
+      right:0px;
+      top:0px;
+      bottom: 0px;
+      margin:auto;
+    }
+
+    .summary-box h2{
+      margin: 0px;
+      padding: 0px;
+    }
+
+    .summary-box .name{
+      width: 180px;
+      display: inline-block;
+    }
+
+    .summary-box .wd{
+      width: 80px;
+      background: red;
+    }
+
+    .pins{
+      position: relative;
+    }
+
+    .pin{
+      width: 20%;
+      height: 100px;
+      border: 1px solid black;
+      display: inline-block;
+    }
+
   </style>
  
   <script type="text/javascript">
     $(function(){
 
+      var synth = window.speechSynthesis;
 
       toScreen(0);
 
       $('.action-to-next-screen').click(function(){
         toNextScreen(this);
       })
+
+      function doAnimatedType( $d, delay ){
+        var text = $d.text();
+        var chars = '<span>'+text.split('').join('</span><span>') + '</span>';
+        $d.html(chars);
+
+        $d.find('span').each(function(i){
+          $(this).css({opacity:0}).delay(delay+i*50).animate({opacity:1},10);
+        });
+
+        setTimeout(function(){
+          
+          var utter = new SpeechSynthesisUtterance(text);
+          utter.voice = synth.getVoices()[0];
+          synth.speak(utter);
+        },delay);
+        
+
+        return text.length*50;
+      }
+
+
+      
 
       function toNextScreen(child){
         var idx = $('.screen').index($(child).closest('.screen'));
@@ -402,7 +460,7 @@
           $s.find('h1').css({position:'relative',top:-200}).animate({top:0});
           $s.find('.ingredient').each(function(i){
 
-            $(this).addClass('static').width(0).height(0).delay((i+1)*300).animate({width:250,height:10},300).delay(100).animate({height:270},300,function(){
+            $(this).addClass('static').width(0).height(0).delay((i+1)*300).animate({width:220,height:10},300).delay(100).animate({height:200},300,function(){
               $(this).removeClass('static').css({width:'',height:''});
             });
 
@@ -420,9 +478,27 @@
           });
    
         } else if($s.is('.screen-checkout')){
-          $s.find('.ing-summary').eq(0).css({top:-500}).delay(1000).animate({top:0});
-          $s.find('.ing-summary').eq(1).css({top:-500}).delay(1500).animate({top:-70});
-          $s.find('.ing-summary').eq(2).css({top:-500}).delay(2000).animate({top:-140});
+          $s.find('.ing-summary').eq(0).css({top:-500}).delay(400).animate({top:0});
+          $s.find('.ing-summary').eq(1).css({top:-500}).delay(600).animate({top:-70});
+          $s.find('.ing-summary').eq(2).css({top:-500}).delay(800).animate({top:-140});
+
+          var total = 0;
+           $('.summary-box .wd:not(.wd-total)').each(function(){
+            total += parseInt($(this).text());
+           })
+
+           $('.summary-box .wd-total').text(total);
+           $('.summary-box').css({opacity:0,height:0}).delay(1000).animate({opacity:1,height:310})
+        } else if($s.is('.screen-intro')){
+
+          var delay = 0;
+          $s.find('p').each(function(){
+
+            delay += doAnimatedType($(this),delay) + 1000;
+
+          })
+
+          
         }
 
         if($s.is('.screen-breadcrumbed')){
@@ -443,7 +519,14 @@
         $(this).addClass('active');
       })
 
+      $('.breadcrumbs li').click(function(){
+        var i = $('.screen').index($('.screen-breadcrumbed').first());
+        var n = $('.breadcrumbs li').index(this);
+        toScreen(i+n);
+      })
+
       $('.ingredient button').click(function(){
+        $(this).closest('.screen').find('.ingredient').removeClass('selected');
         var $ing = $(this).closest('.ingredient').addClass('selected');
         var idxBreadcrumb = $('.screen-breadcrumbed').index($(this).closest('.screen-breadcrumbed'));
 
@@ -451,12 +534,18 @@
 
         $('.breadcrumbs li').eq(idxBreadcrumb).addClass('populated');
         $('.ing').eq(idxBreadcrumb).css({'background-image':img});
+        $('.summary-box .name').eq(idxBreadcrumb).text($ing.find('.name').text());
+        $('.summary-box .wd').eq(idxBreadcrumb).text($ing.find('.wd').text());
         $('.ing-summary').eq(idxBreadcrumb).css({'background-image':img});
+
 
 
         var me = this;
         setTimeout(function(){
-          toNextScreen(me);
+
+          if($('.breadcrumbs li:not(.populated)').length == 1) toScreen(5);
+          else toNextScreen(me);
+          
         },1000)
       })
     })
@@ -479,10 +568,25 @@
             <p style="margin:10px;font-size: 22px;">Global Water Allocation Trust</p>
           </div>
           <br>
+          <div class="pins">
+            <div class="pin"></div>
+            <div class="pin"></div>
+            <div class="pin"></div>
+            <div class="pin"></div>
+          </div>
           <button class="action-to-next-screen">Request Network Access</button>
         </div>
       </div>
       
+    </div>
+    <div class="screen screen-intro" style='padding:100px;'>
+      <p>Hello there,</p>
+      <p>You've come to me at a very interesting time.</p>
+      <p>The world is in peril.</p>
+      <p>You... are in peril.</p>
+      <p>Oh god, someone save me from the inevitability of our collective demise.</p>
+      <button class="action-to-next-screen">Let's Crack On</button>
+
     </div>
     <div class="screen screen-alloc">
        <div class="layer" style="opacity:0.6;background-image: url(./ripples.gif)"></div>
@@ -508,19 +612,19 @@
 
           <div class="ingredient">
             <div class="ingredient-img" style="background-image:url(./ing/wafer.png)"></div>
-            <h2>Wafer <span class="wd">12</span></h2>
+            <h2><span class='name'>Wafer</span> <span class="wd">12</span></h2>
             <p>A delicate cracker with a crunchy texture.</p>
             <button>Confirm</button>
           </div>
           <div class="ingredient">
             <div class="ingredient-img" style="background-image:url(./ing/crispbread.png)"></div>
-            <h2>Crispbread <span class="wd">32</span></h2>
+            <h2><span class='name'>Crispbread</span> <span class="wd">32</span></h2>
             <p>Sun-ripened maize, popped and pressed.</p>
             <button>Confirm</button>
           </div>
           <div class="ingredient">
             <div class="ingredient-img" style="background-image:url(./ing/bread.png)"></div>
-            <h2>Bread <span class="wd">96</span></h2>
+            <h2><span class='name'>Bread</span> <span class="wd">96</span></h2>
             <p>Wheat dough, ground, rested, and baked.</p>
             <button>Confirm</button>
           </div>
@@ -532,19 +636,19 @@
 
           <div class="ingredient">
             <div class="ingredient-img" style="background-image:url(./ing/cheese.png)"></div>
-            <h2>Cheese <span class="wd">12</span></h2>
+            <h2><span class='name'>Cheese</span> <span class="wd">12</span></h2>
             <p>Cow nipple juice and some bacteria.</p>
             <button>Confirm</button>
           </div>
           <div class="ingredient">
             <div class="ingredient-img" style="background-image:url(./ing/salmon.png)"></div>
-            <h2>Salmon <span class="wd">32</span></h2>
+            <h2><span class='name'>Salmon</span> <span class="wd">32</span></h2>
             <p>Farm-grown, caught, and smoked.</p>
             <button>Confirm</button>
           </div>
           <div class="ingredient">
             <div class="ingredient-img" style="background-image:url(./ing/lamb.png)"></div>
-            <h2>Lamb <span class="wd">96</span></h2>
+            <h2><span class='name'>Lamb</span> <span class="wd">96</span></h2>
             <p>Farm raised, slaughtered, and aged.</p>
             <button>Confirm</button>
           </div>
@@ -556,19 +660,19 @@
 
           <div class="ingredient">
             <div class="ingredient-img" style="background-image:url(./ing/parsley.png)"></div>
-            <h2>Parsley <span class="wd">12</span></h2>
+            <h2><span class='name'>Parsley</span> <span class="wd">12</span></h2>
             <p>A little bitter, leafy thingo.</p>
             <button>Confirm</button>
           </div>
           <div class="ingredient">
             <div class="ingredient-img" style="background-image:url(./ing/salsa.png)"></div>
-            <h2>Salsa <span class="wd">32</span></h2>
+            <h2><span class='name'>Salsa</span> <span class="wd">32</span></h2>
             <p>A blob of chunky, red sunshine.</p>
             <button>Confirm</button>
           </div>
           <div class="ingredient">
             <div class="ingredient-img" style="background-image:url(./ing/aoili.png)"></div>
-            <h2>Aoili <span class="wd">96</span></h2>
+            <h2><span class='name'>Aoili</span> <span class="wd">96</span></h2>
             <p>Creamy, eggy white gloop.</p>
             <button>Confirm</button>
           </div>
@@ -578,7 +682,16 @@
       <div class="summary">
         <div class="ing-summary" style="background-image: url(./ing/parsley.png)"></div>
         <div class="ing-summary" style="background-image: url(./ing/lamb.png)"></div>
-        <div class="ing-summary"></div>
+        <div class="ing-summary" style="background-size: 50%;"></div>
+      </div>
+      <div class="box summary-box">
+        <h2><span class='name'>Salsa</span> <span class="wd">32</span></h2>
+        <h2><span class='name'>Salsa</span> <span class="wd">32</span></h2>
+        <h2><span class='name'>Salsa</span> <span class="wd">32</span></h2>
+        <hr>
+        <h2><span class='name'>TOTAL</span> <span class="wd wd-total">32</span></h2>
+        <br>
+        <button>REDEEM</button>
       </div>
     </div>
     <div class="wd-alloc hidden">152</div>
