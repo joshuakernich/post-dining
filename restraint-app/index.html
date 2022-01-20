@@ -430,11 +430,13 @@
         $d.html(chars);
 
         $d.find('span').each(function(i){
-          $(this).css({opacity:0}).delay(delay+i*50).animate({opacity:1},10);
+
+          $(this).css({opacity:0,background:'orange'}).delay(delay+i*50).animate({opacity:1},40,function(){
+            $(this).css({background:'transparent'});
+          });
         });
 
         setTimeout(function(){
-          
           var utter = new SpeechSynthesisUtterance(text);
           utter.voice = synth.getVoices()[0];
           synth.speak(utter);
@@ -491,7 +493,7 @@
            $('.summary-box').css({opacity:0,height:0}).delay(1000).animate({opacity:1,height:310})
         } else if($s.is('.screen-intro')){
 
-          var delay = 0;
+          var delay = 500;
           $s.find('p').each(function(){
 
             delay += doAnimatedType($(this),delay) + 1000;
@@ -559,7 +561,7 @@
       <!--div class="layer" style="background-position:570px;mix-blend-mode: difference;background-image: url(./spinning-globe-white.gif);"></div-->
 
       <div class="layer" style="padding: 50px;text-align: center;">
-        <br><br><br><br><br>
+        <br><br>
         <div class="box">
          
           <img width="90"style="vertical-align:middle;display: inline-block;" src='./water-dollar-symbol.png'>
