@@ -16,7 +16,12 @@
       background: black;
       font-family: 'VT323', monospace;
       font-size: 30px;
-      color: orange;
+
+      --col-a: #ff9900;
+      --col-b: #0099ff;
+
+      color: var(--col-a);
+      overflow: hidden;
     }
 
     h1{
@@ -34,9 +39,9 @@
       width: calc( 100% - 20px );
       margin: 10px;
 
-      border: 1px solid orange;
+      border: 1px solid var(--col-a);
       text-transform: uppercase;
-      background: #33ddff;
+      background: var(--col-b);
       color: white;
     }
 
@@ -85,10 +90,10 @@
 
 
     .box{
-      width: 500px;
+      width: 600px;
       position: relative;
       display: inline-block;
-      background: rgba(255,255,255,0.7);
+      background: rgba(255,255,255,0.9);
       padding: 20px;
       overflow: hidden;
     }
@@ -102,7 +107,7 @@
       bottom: 0px;
 
       width: 20px;
-      border: 2px solid orange;
+      border: 2px solid var(--col-a);
       border-right: 0px;
       display: block;
 
@@ -117,7 +122,7 @@
       bottom: 0px;
 
       width: 20px;
-      border: 2px solid orange;
+      border: 2px solid var(--col-a);
       border-left: 0px;
       display: block;
     }
@@ -136,7 +141,7 @@
     }
 
     .ingredient.selected{
-      background: orange;
+      background: var(--col-a);
       color: white;
     }
 
@@ -155,8 +160,6 @@
       line-height: 50px;
 
     }
-
-
 
     .screen{
       width: 100%;
@@ -178,9 +181,9 @@
     }
 
     .device{
-      width: 1100px;
-      height: 620px;
-      position: absolute;
+      width: 100%;
+      height: 100%;
+      position: fixed;
       top: 0px;
       left: 0px;
       right: 0px;
@@ -201,7 +204,7 @@
       width: 100%;
       height: 100%;
       display: block;
-      background: url('./scanlines.png');
+      /*background: url('./scanlines.png');*/
       background-size: 100% 100%;
       pointer-events: none;
 
@@ -210,13 +213,13 @@
 
     b{
       font-weight: normal;
-      background: #33ddff;
+      background: var(--col-b);
       color: white;
     }
 
     .wd{
       font-weight: normal;
-      background: #33ddff;
+      background: var(--col-b);
       color: white;
       font-size: 35px;
       display: inline-block;
@@ -240,16 +243,18 @@
 
     .wd.neg{
       padding-left: 20px;
-      background: pink;
+      background: var(--col-a);
+      position: relative;
     }
 
     .wd.total{
-      background: red;
+      background: var(--col-b);
     }
 
     .wd.neg:after{
       content: "-";
       position: absolute;
+      color: white;
       left: 5px;
       top: 0px;
     }
@@ -266,7 +271,7 @@
       position: absolute;
       right: 100px;
       top: 0px;
-      background: red;
+      background: var(--col-b);
       display: inline-block;
       color: white;
       font-size: 50px;
@@ -284,7 +289,7 @@
     }
 
     .breadcrumbs.hidden{
-      bottom: -70px;
+      bottom: -150px;
     }
 
     .breadcrumbs{
@@ -311,7 +316,7 @@
     }
 
     .breadcrumbs li.active{
-      background: orange;
+      background: var(--col-a);
       padding-bottom: 40px;
     }
 
@@ -326,11 +331,25 @@
       text-align: left;
     }
 
+
+
     .wd-stat{
-      width: 70%;
+      
       text-align: right;
       display: inline-block;
       margin-right: 10px;
+    }
+
+    .wd-stat.pos{
+      color: var(--col-b);
+    }
+
+    .wd-chart .wd-stat{
+      width: 65%;
+    }
+
+    .overspend{
+      background: red;
     }
 
 
@@ -377,13 +396,12 @@
 
     .summary-box{
       width:300px;
-      height:310px;
+
       position: absolute;
       left:50%;
       right:0px;
-      top:0px;
-      bottom: 0px;
       margin:auto;
+      margin-top: 100px;
     }
 
     .summary-box h2{
@@ -398,7 +416,7 @@
 
     .summary-box .wd{
       width: 80px;
-      background: red;
+      
     }
 
     .pins{
@@ -406,10 +424,70 @@
     }
 
     .pin{
-      width: 20%;
-      height: 100px;
-      border: 1px solid black;
+      width: 50px;
+      height: 70px;
+      border-bottom: 4px solid var(--col-a);
+
       display: inline-block;
+      border-top-width: 3px;
+      vertical-align: middle;
+      font-size: 50px;
+    }
+
+    .pin.focus{
+      animation: throb 1s infinite;
+    }
+
+    .keypad{
+      text-align: center;
+    }
+
+    .keypad button{
+      width: 50px;
+      height: 70px;
+      display: inline-block;
+      background: white;
+      color: var(--col-b);
+      font-size: 50px;
+      margin: 5px;
+      border-color: var(--col-b);
+      border-bottom-width: 4px;
+      vertical-align: middle;
+    }
+
+    .keypad button:after{
+      display: none;
+    }
+
+
+    .cursor{
+      display: inline;
+      background: var(--col-a);
+      animation-name: throb; 
+      animation-duration: 1s;
+      animation-iteration-count: infinite;
+    }
+
+    .cursor:after{
+      content: "_"
+    }
+
+    @keyframes throb{
+      0%{
+        background-color: var(--col-a);
+      }
+
+      50%{
+        background-color: var(--col-a);
+      }
+
+      55%{
+        background-color: transparent;
+      }
+
+      100%{
+        background-color: transparent;
+      }
     }
 
   </style>
@@ -418,6 +496,8 @@
     $(function(){
 
       var synth = window.speechSynthesis;
+      var alloc = 152;
+      var spend = [0,0,0];
 
       toScreen(0);
 
@@ -425,7 +505,40 @@
         toNextScreen(this);
       })
 
-      function doAnimatedType( $d, delay ){
+      for(var i=0; i<10; i++){
+        $("<button>").appendTo('.keypad').text(i).click(onPin);
+      }
+
+      $("<button>").appendTo('.keypad').text('←').click(onPinBack);
+
+      var iPin = 0;
+
+      function onPin(){
+       $('.pin').eq(iPin).text( $(this).text() ).removeClass('focus');
+       iPin++;
+       $('.pin').eq(iPin).addClass('focus');
+
+       var scope = this;
+       if(iPin==4){
+          setTimeout(function(){
+            toNextScreen(scope);
+          },1000)
+          $('.sound-select')[0].play();
+          
+        } else {
+          $('.sound-blip')[0].play();
+        }
+        
+      }
+
+      function onPinBack(){
+        $('.pin').eq(iPin).removeClass('focus');
+        iPin--;
+        $('.pin').eq(iPin).text('').addClass('focus');
+        $('.sound-blip')[0].play();
+      }
+
+      function doAnimatedType( $d, delay, bUtter ){
         var text = $d.text();
         var chars = '<span>'+text.split('').join('</span><span>') + '</span>';
         $d.html(chars);
@@ -437,18 +550,42 @@
           });
         });
 
-        setTimeout(function(){
-          var utter = new SpeechSynthesisUtterance(text);
-          utter.voice = synth.getVoices()[0];
-          synth.speak(utter);
-        },delay);
-        
+        if(bUtter){
+          utter(text,delay);
+        }
 
         return text.length*50;
       }
 
+      function utter(text,delay){
+        setTimeout(function(){
+            var utter = new SpeechSynthesisUtterance(text);
+            utter.voice = synth.getVoices()[0];
+            synth.speak(utter);
+          },delay);
+      }
 
-      
+      function doAnimatedStat( $d, delay ){
+        var text = $d.text();
+        var int = parseInt(text);
+        $d.css({opacity:0}).delay(delay).animate({opacity:1},10);
+
+        $d.text('0');
+        
+        $({int:0}).delay(delay).animate({int:int},{duration:text.length*100,step:function(val){
+          
+          $d.text(Number(Math.floor(val)).toLocaleString());
+          $('.sound-blip')[0].play();
+        }})
+
+        return text.length*100;
+      }
+
+
+      $('.screen-intro button, .screen-alloc button, .screen-checkout button').click(function(){
+        $('.sound-select')[0].play();
+      })
+
 
       function toNextScreen(child){
         var idx = $('.screen').index($(child).closest('.screen'));
@@ -456,11 +593,16 @@
       }
 
       function toScreen(idx){
+
         var $s = $('.screen').hide().eq(idx).show();
 
         if($s.is('.screen-selector')){
           
           $s.find('h1').css({position:'relative',top:-200}).animate({top:0});
+
+
+          utter($s.find('h1').text(),500);
+
           $s.find('.ingredient').each(function(i){
 
             $(this).addClass('static').width(0).height(0).delay((i+1)*300).animate({width:220,height:10},300).delay(100).animate({height:200},300,function(){
@@ -470,7 +612,8 @@
 
           })
         } else if($s.is('.screen-alloc')){
-          $s.find('.box').height(0).animate({height:120})
+          
+          /*$s.find('.box').height(0).animate({height:120})
           .delay(800).animate({height:200})
           .delay(800).animate({height:410})
           .delay(6000).animate({height:490})
@@ -478,7 +621,22 @@
           $s.find('.wd-chart li').each(function(i){
             $(this).find('.wd-stat').css({position:'relative',left:-500}).delay(2000+(i+1)*1000).animate({left:0});
             $(this).find('.wd').css({position:'relative',left:500}).delay(2500+(i+1)*1000).animate({left:0});
-          });
+          });*/
+
+          var d = 500;
+
+          d += doAnimatedType( $s.find('.stockpile .wd-stat'), d ) + 500;
+          d += doAnimatedStat( $s.find('.stockpile .wd'), d ) + 1000;
+          d += doAnimatedType( $s.find('h2'), d, true ) + 1000;
+
+          $s.find('.wd-chart li').each(function(){
+            d += doAnimatedType( $(this).find('.wd-stat'), d ) + 800;
+            d += doAnimatedStat( $(this).find('.wd'), d ) + 500;
+          })
+
+          utter("Your allocation for today is 152 water dollars.",d);
+
+          $s.find('button').css({opacity:0}).delay(d).animate({opacity:1},100);
    
         } else if($s.is('.screen-checkout')){
           $s.find('.ing-summary').eq(0).css({top:-500}).delay(400).animate({top:0});
@@ -490,18 +648,41 @@
             total += parseInt($(this).text());
            })
 
+
+
            $('.summary-box .wd-total').text(total);
-           $('.summary-box').css({opacity:0,height:0}).delay(1000).animate({opacity:1,height:310})
+
+            $('.summary-box h2').each(function(n){
+              doAnimatedType($(this).find('.name'),1000+n*200);
+              doAnimatedStat($(this).find('.wd'),1200+n*200);
+            })
+
+            
+
+           if(total>alloc){
+              $('.wd-total').addClass('overspend');
+              $('.alloc-error').show();
+              $s.find('button').hide();
+              doAnimatedType($('.alloc-error'),2500,true);
+            } else {
+              $('.wd-total').removeClass('overspend');
+              $('.alloc-error').hide();
+              $s.find('button').show().css({opacity:0}).delay(2500).animate({opacity:1},100);
+              utter("A fine selection for a socially responsible member of society.",2000)
+            }
+
+            
+
         } else if($s.is('.screen-intro')){
 
           var delay = 500;
           $s.find('p').each(function(){
-
-            delay += doAnimatedType($(this),delay) + 1000;
-
+            delay += doAnimatedType($(this),delay,true) + 1000;
           })
 
           
+        } else if($s.is('.screen-outro')){
+          utter("Thank you for trusting GWAT. Your Global Water Allocation Trust... Your personal Canapé Code is... A... 2... B.",500);
         }
 
         if($s.is('.screen-breadcrumbed')){
@@ -541,12 +722,23 @@
         $('.summary-box .wd').eq(idxBreadcrumb).text($ing.find('.wd').text());
         $('.ing-summary').eq(idxBreadcrumb).css({'background-image':img});
 
+        utter($ing.find('.name').text());
 
+
+        var total = 0;
+         $('.summary-box .wd:not(.wd-total)').each(function(){
+          total += parseInt($(this).text());
+         })
+
+         $('.wd-spent').text(total);
+
+         $('.wd-alloc').removeClass('overspend');
+         if(total>alloc) $('.wd-alloc').addClass('overspend');
 
         var me = this;
         setTimeout(function(){
 
-          if($('.breadcrumbs li:not(.populated)').length == 1) toScreen(5);
+          if($('.breadcrumbs li:not(.populated)').length == 1) toScreen(6);
           else toNextScreen(me);
           
         },1000)
@@ -571,24 +763,35 @@
             <p style="margin:10px;font-size: 22px;">Global Water Allocation Trust</p>
           </div>
           <br>
+          
+          <!--button class="action-to-next-screen">Request Network Access</button-->
+        </div><br>
+        <div class="box">
+        <h2>Enter Personal ID CODE</h2>
           <div class="pins">
-            <div class="pin"></div>
+            <div class="pin focus"></div>
             <div class="pin"></div>
             <div class="pin"></div>
             <div class="pin"></div>
           </div>
-          <button class="action-to-next-screen">Request Network Access</button>
-        </div>
+           </div>
+        <div class="keypad"></div>
+     
       </div>
       
     </div>
     <div class="screen screen-intro" style='padding:100px;'>
+
+       <div class="layer" style="opacity:0.6;background-image: url(./ripples.gif)"></div>
+       <div class="layer">
+        <div class="box" style="text-align: left;padding:20px 50px;margin-top: 50px;">
       <p>Hello there,</p>
       <p>You've come to me at a very interesting time.</p>
       <p>The world is in peril.</p>
       <p>You... are in peril.</p>
       <p>Oh god, someone save me from the inevitability of our collective demise.</p>
-      <button class="action-to-next-screen">Let's Crack On</button>
+      <button class="action-to-next-screen">Let's Crack On</button></div>
+    </div>
 
     </div>
     <div class="screen screen-alloc">
@@ -596,15 +799,18 @@
        <div class="layer">
         <br><br>
         <div class="box">
-          <h1>Calculating <b> personal water allocation</b>...</h1>
-          <p>WORLD stockpile <span class='wd'>89,582,618,271</span></p>
+
+          <p class="stockpile"><span class='wd-stat pos'>WORLD WATER stockpile</span><span class='wd'>89582618271</span></p>
+          <h2>Calculating personal water allocation.</h2>
+
           <ul class="wd-chart">
-            <li><span class='wd-stat'>Teir 3 precariat</span><span class='wd'>212</span></li>
-            <li><span class='wd-stat'>Shower 8:37:12-9:12:27</span><span class='wd neg'>37</span></li>
-            <li><span class='wd-stat'>Faucet 9:15:02-9:15.04</span><span class='wd neg'>6</span></li>
-            <li><span class='wd-stat'>Faucet 10:12:54-10:12.59</span><span class='wd neg'>8</span></li>
-            <li><span class='wd-stat'>TOTAL ALLOCATION</span><span class='wd total'>152</span></li>
+            <li><span class='wd-stat pos'>Universal daily allocation</span><span class='wd'>212</span></li>
+            <li><span class='wd-stat'>Shower: 6 minutes</span><span class='wd neg'>37</span></li>
+            <li><span class='wd-stat'>Faucet: 12 seconds</span><span class='wd neg'>6</span></li>
+            <li><span class='wd-stat'>Faucet: 15 seconds</span><span class='wd neg'>8</span></li>
+            <li><span class='wd-stat pos'>TOTAL ALLOCATION</span><span class='wd total'>152</span></li>
           </ul>
+          <br>
           <button class="action-to-next-screen">REDEEM ALLOCATION</button>
         </div>
       </div>
@@ -688,19 +894,47 @@
         <div class="ing-summary" style="background-size: 50%;"></div>
       </div>
       <div class="box summary-box">
-        <h2><span class='name'>Salsa</span> <span class="wd">32</span></h2>
-        <h2><span class='name'>Salsa</span> <span class="wd">32</span></h2>
-        <h2><span class='name'>Salsa</span> <span class="wd">32</span></h2>
+        <h2><span class='name'>Salsa</span> <span class="wd">0</span></h2>
+        <h2><span class='name'>Salsa</span> <span class="wd">0</span></h2>
+        <h2><span class='name'>Salsa</span> <span class="wd">0</span></h2>
         <hr>
         <h2><span class='name'>TOTAL</span> <span class="wd wd-total">32</span></h2>
         <br>
-        <button>REDEEM</button>
+        <p class='alloc-error' style="color:red;margin:0px;">You have exceeded your water allocation. Please select an ingredient to change.</p>
+        <button class="action-to-next-screen">REDEEM</button>
       </div>
     </div>
-    <div class="wd-alloc hidden">152</div>
+     <div class="screen screen-outro">
+      <div class="layer" style="opacity:0.2;background-image: url(./globe-orange.gif)"></div>
+ 
+      <div class="layer" style="padding: 50px;text-align: center;">
+        <br><br>
+        <div class="box">
+         
+          <img width="90"style="vertical-align:middle;display: inline-block;" src='./water-dollar-symbol.png'>
+          <div style="vertical-align:middle;display:inline-block;text-align:center;">
+            <p style="font-size:180px;line-height:100px;margin:0px;">GWAT</p>
+            <p style="margin:10px;font-size: 22px;">Global Water Allocation Trust</p>
+          </div>
+          <br>
+        </div>
+        <div class="box">
+          Personal CANAPE CODE
+          <h1 style="color:var(--col-b);font-size: 150px;">A2B</h1>
+        </div>
+      </div>
+      </div>
+    </div>
+    <div class="wd-alloc hidden"><span class='wd-spent'>0</span> of <span>152</span></div>
     <ul class="breadcrumbs hidden">
       <li class="active">Carbohydrate<div class="ing"></div></li><li>Protein<div class="ing"></div></li><li>Topping<div class="ing"></div></li><li>Checkout</li>
     </ul>
   </div>
+  <audio class="sound-blip">
+    <source src="./blip.wav" type="">
+  </audio>
+  <audio class="sound-select">
+    <source src="./select.wav" type="">
+  </audio>
 </body>
 </html>
