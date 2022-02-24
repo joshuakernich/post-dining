@@ -4,6 +4,17 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <title>Restraint</title>
    <script type="text/javascript" src='./jq.js'></script>
+   <script type="text/javascript">
+    
+    // changeable data
+    var layers = [];
+    var intro = "";
+    var outro = "";
+    var alloc = 152;
+    var skipAllocation = false;
+
+   </script>
+   <script type="text/javascript" src='./data/burger-bar.js'></script>
 
   <style type="text/css">
 
@@ -67,6 +78,7 @@
       overflow: hidden;
       height: 200px;
       transition: width 0.5s, height 0.5s;
+      margin-right: 5px;
     }
 
     .ingredient.static{
@@ -184,19 +196,16 @@
       /*1100 x 620*/
       width: 100%;
       height: 100%;
-      width: 1100px;
-      height: 560px;
+      /*width: 1100px;
+      height: 560px;*/
       position: fixed;
       top: 0px;
       left: 0px;
       right: 0px;
       bottom: 0px;
       margin: auto;
-     
       background: white;
       overflow: hidden;
-
-      
     }
 
     .device:after{
@@ -207,17 +216,20 @@
       width: 100%;
       height: 100%;
       display: block;
-      /*background: url('./scanlines.png');*/
       background-size: 100% 100%;
       pointer-events: none;
-
-      
     }
 
     b{
       font-weight: normal;
       background: var(--col-b);
       color: white;
+    }
+
+    .ingredient .wd{
+      position: absolute;
+      top: 10px;
+      right: 10px;
     }
 
     .wd{
@@ -229,6 +241,21 @@
       padding: 0px 5px;
       line-height: 40px;
     } 
+
+    wd{
+      width: 15px;
+      height: 20px;
+      background-image: url('./water-dollar-symbol.png');
+      display: inline-block;
+      background-size: contain;
+      vertical-align: bottom;
+      background-repeat: no-repeat;
+      image-rendering: pixelated;
+    }
+
+    .ingredient.selected wd{
+      background-image: url('./water-dollar-white.png');
+    }
 
     .wd:before, .wd-alloc:before{
       content: "";
@@ -242,6 +269,7 @@
       vertical-align: middle;
       position: relative;
       top: -3px;
+      image-rendering: pixelated;
     }
 
     .wd.neg{
@@ -355,8 +383,6 @@
       background: red;
     }
 
-
-
     .ing{
       width: 100px;
       height: 0px;
@@ -379,7 +405,7 @@
       width: 100%;
       height: 200px;
       
-      background-image: url(./ing/cracker.png);
+      background-image: url(./img/cracker.png);
       background-position:center;
       background-size: contain;
       background-repeat: no-repeat;
@@ -398,7 +424,7 @@
     }
 
     .summary-box{
-      width:300px;
+      width:450px;
 
       position: absolute;
       left:50%;
@@ -413,7 +439,7 @@
     }
 
     .summary-box .name{
-      width: 180px;
+      width: 330px;
       display: inline-block;
     }
 
@@ -496,16 +522,52 @@
   </style>
  
   <script type="text/javascript">
+
+
     $(function(){
 
+      //load up the data
+
+      for(var l in layers){
+        var $s = $('<div class="screen screen-selector screen-breadcrumbed">').insertBefore('.screen-checkout');
+        $('<h1>'+layers[l].title+'</h1>').appendTo($s);
+
+        for(var i in layers[l].list){
+          var $ing = $('<div class="ingredient">\
+            <div class="ingredient-img" style="background-image:url('+layers[l].list[i].img+')"></div>\
+            <h2><span class="name">'+layers[l].list[i].name+'</span> <span class="wd">'+layers[l].list[i].wd+'</span></h2>\
+            <p>'+layers[l].list[i].d+'</p>\
+            <button>Confirm</button>\
+          </div>').appendTo($s);
+
+          $ing.data('bean',layers[l].list[i]);
+          if(layers[l].isABurger) $ing.addClass('is-a-burger');
+        }
+
+        $('<li>'+layers[l].short+'<div class="ing"></div></li>').insertBefore('.breadcrumbs li:last-of-type');
+        $('<h2><span class="name">Salsa</span> <span class="wd">0</span></h2>').insertBefore('.summary-box hr');
+        $('<div class="ing-summary" style="background-image: url(./img/lamb.png)"></div>').appendTo('.summary');
+        $('.wd-of').text(alloc);
+
+        //add an extra layer for the burger top
+        if(layers[l].isABurger) $('<div class="ing-summary" style="background-image: url(./img/lamb.png)"></div>').appendTo('.summary');
+      }
+
+      $('.intro-monologue').html(intro);
+
       var synth = window.speechSynthesis;
-      var alloc = 152;
+     
       var spend = [0,0,0];
+      var utters = [];
 
       toScreen(0);
 
       $('.action-to-next-screen').click(function(){
         toNextScreen(this);
+      })
+
+      $('.action-to-start').click(function(){
+        toScreen(0);
       })
 
       for(var i=0; i<10; i++){
@@ -560,12 +622,13 @@
         return text.length*50;
       }
 
+
       function utter(text,delay){
-        setTimeout(function(){
+        utters.push( setTimeout(function(){
             var utter = new SpeechSynthesisUtterance(text);
             utter.voice = synth.getVoices()[0];
             synth.speak(utter);
-          },delay);
+          },delay));
       }
 
       function doAnimatedStat( $d, delay ){
@@ -597,6 +660,9 @@
 
       function toScreen(idx){
 
+        while(utters.length) clearInterval(utters.pop());
+        synth.cancel();
+
         var $s = $('.screen').hide().eq(idx).show();
 
         if($s.is('.screen-selector')){
@@ -616,15 +682,10 @@
           })
         } else if($s.is('.screen-alloc')){
           
-          /*$s.find('.box').height(0).animate({height:120})
-          .delay(800).animate({height:200})
-          .delay(800).animate({height:410})
-          .delay(6000).animate({height:490})
-
-          $s.find('.wd-chart li').each(function(i){
-            $(this).find('.wd-stat').css({position:'relative',left:-500}).delay(2000+(i+1)*1000).animate({left:0});
-            $(this).find('.wd').css({position:'relative',left:500}).delay(2500+(i+1)*1000).animate({left:0});
-          });*/
+          if(skipAllocation){
+            toNextScreen($s);
+            return;
+          }
 
           var d = 500;
 
@@ -637,21 +698,21 @@
             d += doAnimatedStat( $(this).find('.wd'), d ) + 500;
           })
 
-          utter("Your allocation for today is 152 water dollars.",d);
+          utter("Your allocation for today is "+alloc+" water dollars.",d);
 
           $s.find('button').css({opacity:0}).delay(d).animate({opacity:1},100);
    
         } else if($s.is('.screen-checkout')){
-          $s.find('.ing-summary').eq(0).css({top:-500}).delay(400).animate({top:0});
-          $s.find('.ing-summary').eq(1).css({top:-500}).delay(600).animate({top:-70});
-          $s.find('.ing-summary').eq(2).css({top:-500}).delay(800).animate({top:-140});
+
+          $s.find('.ing-summary').each(function(n){
+            $(this).css({top:-500}).delay(400*(n+1)).animate({top:-70*n});
+          })
+
 
           var total = 0;
            $('.summary-box .wd:not(.wd-total)').each(function(){
             total += parseInt($(this).text());
            })
-
-
 
            $('.summary-box .wd-total').text(total);
 
@@ -685,7 +746,8 @@
 
           
         } else if($s.is('.screen-outro')){
-          utter("Thank you for trusting GWAT. Your Global Water Allocation Trust... Your personal Canapé Code is... A... 2... B.",500);
+          //utter("Thank you for trusting GWAT. Your Global Water Allocation Trust... Your personal Canapé Code is... A... 2... B.",500);
+          utter(outro,500);
         }
 
         if($s.is('.screen-breadcrumbed')){
@@ -723,7 +785,15 @@
         $('.ing').eq(idxBreadcrumb).css({'background-image':img});
         $('.summary-box .name').eq(idxBreadcrumb).text($ing.find('.name').text());
         $('.summary-box .wd').eq(idxBreadcrumb).text($ing.find('.wd').text());
-        $('.ing-summary').eq(idxBreadcrumb).css({'background-image':img});
+
+
+        if( $ing.hasClass('is-a-burger') ){
+          //well this is annoying
+          $('.ing-summary').first().css({'background-image':'url('+$ing.data('bean').bottom+')'});
+          $('.ing-summary').last().css({'background-image':'url('+$ing.data('bean').top+')'});
+        } else {
+          $('.ing-summary').eq(idxBreadcrumb).css({'background-image':img});
+        }
 
         utter($ing.find('.name').text());
 
@@ -741,7 +811,7 @@
         var me = this;
         setTimeout(function(){
 
-          if($('.breadcrumbs li:not(.populated)').length == 1) toScreen(6);
+          if($('.breadcrumbs li:not(.populated)').length == 1) toScreen($('.screen').index('.screen-checkout')-1);
           else toNextScreen(me);
           
         },1000)
@@ -751,10 +821,8 @@
 </head>
 <body>
   <div class="device">
-    <div class="screen">
+    <!--div class="screen">
       <div class="layer" style="opacity:0.2;background-image: url(./globe-orange.gif)"></div>
-      <!--div class="layer" style="background-image: url(./play-glitch.gif);opacity: 0.1;"></div-->
-      <!--div class="layer" style="background-position:570px;mix-blend-mode: difference;background-image: url(./spinning-globe-white.gif);"></div-->
 
       <div class="layer" style="text-align: center;">
         <br>
@@ -767,7 +835,6 @@
           </div>
           <br>
           
-          <!--button class="action-to-next-screen">Request Network Access</button-->
         </div><br>
         <div class="box">
         <h2>Enter Personal ID CODE</h2>
@@ -782,16 +849,33 @@
      
       </div>
       
+    </div-->
+    <div class="screen">
+      <div class="layer" style="opacity:0.2;background-image: url(./globe-orange.gif)"></div>
+
+      <div class="layer" style="text-align: center;">
+        <br>
+        <div class="box">
+          <br><br>
+          <h1>Welcome to the<br>Water Dollar<br>Burger Bar</h1>
+          <br><br>
+          <button class="action-to-next-screen">BEGIN</button>
+        </div>
+     
+      </div>
+      
     </div>
     <div class="screen screen-intro" style='padding:100px;'>
 
        <div class="layer" style="opacity:0.6;background-image: url(./ripples.gif)"></div>
        <div class="layer">
         <div class="box" style="text-align: left;padding:20px 50px;margin-top: 50px;">
-      <p>Hello there,</p>
-      <p>Welcome to the Global Water Allocation Trust Canteen Kiosk.</p>
-      <p>Today, you will be granted the privelege to attenuate and redeem a socially responsible canapé.</p>
-      <p>Your compliance is mandatory.</p>
+          <div class="intro-monologue">
+            <p>Hello there,</p>
+            <p>Welcome to the Global Water Allocation Trust Canteen Kiosk.</p>
+            <p>Today, you will be granted the privelege to attenuate and redeem a socially responsible canapé.</p>
+            <p>Your compliance is mandatory.</p>
+          </div>
       <button class="action-to-next-screen">Let's Crack On</button></div>
     </div>
 
@@ -817,24 +901,24 @@
         </div>
       </div>
     </div>
-    <div class="screen screen-selector screen-breadcrumbed">
+    <!--div class="screen screen-selector screen-breadcrumbed">
 
         <h1>Select a <b>Carbohydrate</b></h1>
 
           <div class="ingredient">
-            <div class="ingredient-img" style="background-image:url(./ing/wafer.png)"></div>
+            <div class="ingredient-img" style="background-image:url(./img/wafer.png)"></div>
             <h2><span class='name'>Wafer</span> <span class="wd">12</span></h2>
             <p>A delicate cracker with a crunchy texture.</p>
             <button>Confirm</button>
           </div>
           <div class="ingredient">
-            <div class="ingredient-img" style="background-image:url(./ing/crispbread.png)"></div>
+            <div class="ingredient-img" style="background-image:url(./img/crispbread.png)"></div>
             <h2><span class='name'>Crispbread</span> <span class="wd">32</span></h2>
             <p>Sun-ripened maize, popped and pressed.</p>
             <button>Confirm</button>
           </div>
           <div class="ingredient">
-            <div class="ingredient-img" style="background-image:url(./ing/bread.png)"></div>
+            <div class="ingredient-img" style="background-image:url(./img/bread.png)"></div>
             <h2><span class='name'>Bread</span> <span class="wd">96</span></h2>
             <p>Wheat dough, ground, rested, and baked.</p>
             <button>Confirm</button>
@@ -846,19 +930,19 @@
         <h1>Select a <b>Protein</b></h1>
 
           <div class="ingredient">
-            <div class="ingredient-img" style="background-image:url(./ing/cheese.png)"></div>
+            <div class="ingredient-img" style="background-image:url(./img/cheese.png)"></div>
             <h2><span class='name'>Cheese</span> <span class="wd">12</span></h2>
             <p>Cow nipple juice and some bacteria.</p>
             <button>Confirm</button>
           </div>
           <div class="ingredient">
-            <div class="ingredient-img" style="background-image:url(./ing/salmon.png)"></div>
+            <div class="ingredient-img" style="background-image:url(./img/salmon.png)"></div>
             <h2><span class='name'>Salmon</span> <span class="wd">32</span></h2>
             <p>Farm-grown, caught, and smoked.</p>
             <button>Confirm</button>
           </div>
           <div class="ingredient">
-            <div class="ingredient-img" style="background-image:url(./ing/lamb.png)"></div>
+            <div class="ingredient-img" style="background-image:url(./img/lamb.png)"></div>
             <h2><span class='name'>Lamb</span> <span class="wd">96</span></h2>
             <p>Farm raised, slaughtered, and aged.</p>
             <button>Confirm</button>
@@ -870,35 +954,31 @@
         <h1>Select a <b>Topping</b></h1>
 
           <div class="ingredient">
-            <div class="ingredient-img" style="background-image:url(./ing/parsley.png)"></div>
+            <div class="ingredient-img" style="background-image:url(./img/parsley.png)"></div>
             <h2><span class='name'>Parsley</span> <span class="wd">12</span></h2>
             <p>A little bitter, leafy thingo.</p>
             <button>Confirm</button>
           </div>
           <div class="ingredient">
-            <div class="ingredient-img" style="background-image:url(./ing/salsa.png)"></div>
+            <div class="ingredient-img" style="background-image:url(./img/salsa.png)"></div>
             <h2><span class='name'>Salsa</span> <span class="wd">32</span></h2>
             <p>A blob of chunky, red sunshine.</p>
             <button>Confirm</button>
           </div>
           <div class="ingredient">
-            <div class="ingredient-img" style="background-image:url(./ing/aoili.png)"></div>
+            <div class="ingredient-img" style="background-image:url(./img/aoili.png)"></div>
             <h2><span class='name'>Aoili</span> <span class="wd">96</span></h2>
             <p>Creamy, eggy white gloop.</p>
             <button>Confirm</button>
           </div>
         
-    </div>
+    </div-->
     <div class="screen screen-checkout screen-breadcrumbed">
       <div class="summary">
-        <div class="ing-summary" style="background-image: url(./ing/parsley.png)"></div>
-        <div class="ing-summary" style="background-image: url(./ing/lamb.png)"></div>
-        <div class="ing-summary" style="background-size: 50%;"></div>
+        <!-- ingredient images here -->
       </div>
       <div class="box summary-box">
-        <h2><span class='name'>Salsa</span> <span class="wd">0</span></h2>
-        <h2><span class='name'>Salsa</span> <span class="wd">0</span></h2>
-        <h2><span class='name'>Salsa</span> <span class="wd">0</span></h2>
+        <!-- ingredient list here -->
         <hr>
         <h2><span class='name'>TOTAL</span> <span class="wd wd-total">32</span></h2>
         <br>
@@ -906,7 +986,20 @@
         <button class="action-to-next-screen">REDEEM</button>
       </div>
     </div>
-     <div class="screen screen-outro">
+    <div class="screen screen-outro">
+      <div class="layer" style="opacity:0.2;background-image: url(./globe-orange.gif)"></div>
+      <div class="layer" style="text-align: center;">
+        <br>
+        <br>
+        <br>
+        <div class="box">
+          <h1>Thank you</h1>
+          <br><br>
+          <button class="action-to-start">FINISH</button>
+        </div>
+      </div>
+    </div>
+     <!--div class="screen screen-outro">
       <div class="layer" style="opacity:0.2;background-image: url(./globe-orange.gif)"></div>
  
       <div class="layer" style="text-align: center;">
@@ -923,16 +1016,14 @@
         <div class="box">
           Personal CANAPE CODE
           <h1 style="color:var(--col-b);font-size: 150px;">A2B</h1>
-          <button>FINISH</button>
+          <button class="action-to-start">FINISH</button>
         </div>
         
       </div>
-      </div>
+    </div-->
     
-    <div class="wd-alloc hidden"><span class='wd-spent'>0</span> of <span>152</span></div>
-    <ul class="breadcrumbs hidden">
-      <li class="active">Carbohydrate<div class="ing"></div></li><li>Protein<div class="ing"></div></li><li>Topping<div class="ing"></div></li><li>Checkout</li>
-    </ul>
+    <div class="wd-alloc hidden"><span class='wd-spent'>0</span> of <span class="wd-of">152</span></div>
+    <ul class="breadcrumbs hidden"><li>Checkout</li></ul>
   </div>
   <audio class="sound-blip">
     <source src="./blip.wav" type="">
