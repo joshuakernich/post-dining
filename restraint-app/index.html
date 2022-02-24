@@ -11,6 +11,7 @@
     var intro = "";
     var outro = "";
     var alloc = 152;
+    var isMuted = false;
     var skipAllocation = false;
 
    </script>
@@ -155,6 +156,14 @@
     .ingredient.selected{
       background: var(--col-a);
       color: white;
+    }
+
+    .ingredient button:before{
+      content: "CONFIRM";
+    }
+
+    .ingredient.selected button:before{
+      content: "REMOVE";
     }
 
     button{
@@ -405,7 +414,6 @@
       width: 100%;
       height: 200px;
       
-      background-image: url(./img/cracker.png);
       background-position:center;
       background-size: contain;
       background-repeat: no-repeat;
@@ -439,12 +447,12 @@
     }
 
     .summary-box .name{
-      width: 330px;
+      width: 310px;
       display: inline-block;
     }
 
     .summary-box .wd{
-      width: 80px;
+      width: 100px;
       
     }
 
@@ -537,7 +545,7 @@
             <div class="ingredient-img" style="background-image:url('+layers[l].list[i].img+')"></div>\
             <h2><span class="name">'+layers[l].list[i].name+'</span> <span class="wd">'+layers[l].list[i].wd+'</span></h2>\
             <p>'+layers[l].list[i].d+'</p>\
-            <button>Confirm</button>\
+            <button></button>\
           </div>').appendTo($s);
 
           $ing.data('bean',layers[l].list[i]);
@@ -545,12 +553,12 @@
         }
 
         $('<li>'+layers[l].short+'<div class="ing"></div></li>').insertBefore('.breadcrumbs li:last-of-type');
-        $('<h2><span class="name">Salsa</span> <span class="wd">0</span></h2>').insertBefore('.summary-box hr');
-        $('<div class="ing-summary" style="background-image: url(./img/lamb.png)"></div>').appendTo('.summary');
+        $('<h2><span class="name">-</span> <span class="wd">0</span></h2>').insertBefore('.summary-box hr');
+        $('<div class="ing-summary"></div>').appendTo('.summary');
         $('.wd-of').text(alloc);
 
         //add an extra layer for the burger top
-        if(layers[l].isABurger) $('<div class="ing-summary" style="background-image: url(./img/lamb.png)"></div>').appendTo('.summary');
+        if(layers[l].isABurger) $('<div class="ing-summary"></div>').appendTo('.summary');
       }
 
       $('.intro-monologue').html(intro);
@@ -624,6 +632,7 @@
 
 
       function utter(text,delay){
+        if(isMuted) return;
         utters.push( setTimeout(function(){
             var utter = new SpeechSynthesisUtterance(text);
             utter.voice = synth.getVoices()[0];
@@ -705,13 +714,13 @@
         } else if($s.is('.screen-checkout')){
 
           $s.find('.ing-summary').each(function(n){
-            $(this).css({top:-500}).delay(400*(n+1)).animate({top:-70*n});
+            $(this).css({top:-500}).delay(400*(n+1)).animate({top:-50*n});
           })
 
 
           var total = 0;
            $('.summary-box .wd:not(.wd-total)').each(function(){
-            total += parseInt($(this).text());
+            total += parseFloat($(this).text());
            })
 
            $('.summary-box .wd-total').text(total);
@@ -775,46 +784,68 @@
       })
 
       $('.ingredient button').click(function(){
+
+        var isAlreadySelected = $(this).closest('.ingredient').hasClass('selected');
+
         $(this).closest('.screen').find('.ingredient').removeClass('selected');
-        var $ing = $(this).closest('.ingredient').addClass('selected');
+
+        var $ing = $(this).closest('.ingredient');
         var idxBreadcrumb = $('.screen-breadcrumbed').index($(this).closest('.screen-breadcrumbed'));
 
-        var img = $ing.find('.ingredient-img').css('background-image');
+        if(isAlreadySelected){
+          //just deselect it
+          $('.breadcrumbs li').eq(idxBreadcrumb).removeClass('populated');
+          $('.ing').eq(idxBreadcrumb).css({'background-image':'none'});
+          $('.summary-box .name').eq(idxBreadcrumb).text('-');
+          $('.summary-box .wd').eq(idxBreadcrumb).text(0);
 
-        $('.breadcrumbs li').eq(idxBreadcrumb).addClass('populated');
-        $('.ing').eq(idxBreadcrumb).css({'background-image':img});
-        $('.summary-box .name').eq(idxBreadcrumb).text($ing.find('.name').text());
-        $('.summary-box .wd').eq(idxBreadcrumb).text($ing.find('.wd').text());
-
-
-        if( $ing.hasClass('is-a-burger') ){
-          //well this is annoying
-          $('.ing-summary').first().css({'background-image':'url('+$ing.data('bean').bottom+')'});
-          $('.ing-summary').last().css({'background-image':'url('+$ing.data('bean').top+')'});
+          if( $ing.hasClass('is-a-burger') ){
+            //well this is annoying
+            $('.ing-summary').first().css({'background-image':'none'});
+            $('.ing-summary').last().css({'background-image':'none'});
+          } else {
+            $('.ing-summary').eq(idxBreadcrumb).css({'background-image':'none'});
+          }
+          
         } else {
-          $('.ing-summary').eq(idxBreadcrumb).css({'background-image':img});
-        }
 
-        utter($ing.find('.name').text());
+          $ing.addClass('selected');
+          
+          var img = $ing.find('.ingredient-img').css('background-image');
+
+          $('.breadcrumbs li').eq(idxBreadcrumb).addClass('populated');
+          $('.ing').eq(idxBreadcrumb).css({'background-image':img});
+          $('.summary-box .name').eq(idxBreadcrumb).text($ing.find('.name').text());
+          $('.summary-box .wd').eq(idxBreadcrumb).text($ing.find('.wd').text());
+
+
+          if( $ing.hasClass('is-a-burger') ){
+            //well this is annoying
+            $('.ing-summary').first().css({'background-image':'url('+$ing.data('bean').bottom+')'});
+            $('.ing-summary').last().css({'background-image':'url('+$ing.data('bean').top+')'});
+          } else {
+            $('.ing-summary').eq(idxBreadcrumb).css({'background-image':img});
+          }
+
+          utter($ing.find('.name').text());
+
+          var me = this;
+          setTimeout(function(){
+            if($('.breadcrumbs li:not(.populated)').length == 1) toScreen($('.screen').index('.screen-checkout')-1);
+            else toNextScreen(me);
+          },1000)
+        }
 
 
         var total = 0;
          $('.summary-box .wd:not(.wd-total)').each(function(){
-          total += parseInt($(this).text());
+          total += parseFloat($(this).text());
          })
 
          $('.wd-spent').text(total);
 
          $('.wd-alloc').removeClass('overspend');
          if(total>alloc) $('.wd-alloc').addClass('overspend');
-
-        var me = this;
-        setTimeout(function(){
-
-          if($('.breadcrumbs li:not(.populated)').length == 1) toScreen($('.screen').index('.screen-checkout')-1);
-          else toNextScreen(me);
-          
-        },1000)
       })
     })
   </script>
@@ -854,7 +885,7 @@
       <div class="layer" style="opacity:0.2;background-image: url(./globe-orange.gif)"></div>
 
       <div class="layer" style="text-align: center;">
-        <br>
+        <br><br>
         <div class="box">
           <br><br>
           <h1>Welcome to the<br>Water Dollar<br>Burger Bar</h1>
@@ -993,7 +1024,7 @@
         <br>
         <br>
         <div class="box">
-          <h1>Thank you</h1>
+          <h1>Thankyou for making choices that support a fair water distribution for all.</h1>
           <br><br>
           <button class="action-to-start">FINISH</button>
         </div>

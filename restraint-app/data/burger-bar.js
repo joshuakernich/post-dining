@@ -1,7 +1,7 @@
 
 
 
-function makeDescription(LitresPerKG,grams,WDPerGram){
+function makeDescription(LitresPerKG,WDPerGram,grams){
   return ""+LitresPerKG+" Litres per kg | "+grams+"g at <wd></wd>"+WDPerGram+" per gram"
 }
 
@@ -14,6 +14,7 @@ outro = "Thankyou for making choices that support a fair water distribution for 
 
 alloc = 400;
 skipAllocation = true;
+isMuted = true;
 
 layers = [
   {
