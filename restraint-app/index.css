@@ -1,0 +1,507 @@
+ @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+
+    body{
+      padding: 0px;
+      margin: 0px;
+      background: black;
+      font-family: 'VT323', monospace;
+      font-size: 30px;
+
+      --col-a: #ff9900;
+      --col-b: #0099ff;
+
+      color: var(--col-a);
+      overflow: hidden;
+    }
+
+    h1{
+      margin: 0px;
+      padding: 0px;
+    }
+
+    button{
+      font-family: inherit;
+      font-size: inherit;
+      color: inherit;
+      background: white;
+      border: none;
+      padding: 10px;
+      width: calc( 100% - 20px );
+      margin: 10px;
+
+      border: 1px solid var(--col-a);
+      text-transform: uppercase;
+      background: var(--col-b);
+      color: white;
+    }
+
+    .hamburger{
+      margin: 5vh 0px;
+
+    }
+
+    .hamburger-layer{
+      
+      white-space: nowrap;
+      overflow-x: scroll;
+    }
+
+    .ingredient{
+      display: inline-block;
+      white-space: normal;
+
+      text-align: center;
+      width: 220px;
+      vertical-align: top;
+      position: relative;
+      overflow: hidden;
+      height: 200px;
+      transition: width 0.5s, height 0.5s;
+      margin-right: 5px;
+    }
+
+    .ingredient.static{
+      transition: none;
+    }
+
+    .ingredient h2{
+      white-space: nowrap;
+      line-height: 70px;
+      margin: 0px;
+      padding: 0px;
+    }
+
+    .ingredient-img{
+      width: 100%;
+      height: 200px;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: 90%;
+    }
+
+
+    .box{
+      width: 600px;
+      position: relative;
+      display: inline-block;
+      background: rgba(255,255,255,0.9);
+      padding: 20px;
+      overflow: hidden;
+    }
+
+    .ing:before, .box:before, .ingredient:before{
+      content: "";
+
+      position: absolute;
+      left: 0px;
+      top: 0px;
+      bottom: 0px;
+
+      width: 20px;
+      border: 2px solid var(--col-a);
+      border-right: 0px;
+      display: block;
+
+    }
+
+    .ing:after, .box:after, .ingredient:after{
+      content: "";
+
+      position: absolute;
+      right: 0px;
+      top: 0px;
+      bottom: 0px;
+
+      width: 20px;
+      border: 2px solid var(--col-a);
+      border-left: 0px;
+      display: block;
+    }
+
+    .ingredient p{
+      text-align: left;
+      padding: 0px 20px; 
+      font-size: 20px;
+      margin: 0px;
+    }
+
+    .ingredient.active{
+      height: 360px;
+      width: 400px;
+      background: white;
+    }
+
+    .ingredient.selected{
+      background: var(--col-a);
+      color: white;
+    }
+
+    .ingredient button:before{
+      content: "CONFIRM";
+    }
+
+    .ingredient.selected button:before{
+      content: "REMOVE";
+    }
+
+    button{
+      position: relative;
+    }
+
+    button:after{
+      content: ">";
+      position: absolute;
+      right: 0px;
+      width: 40px;
+      text-align: center;
+      display: block;
+      top: 0px;
+      line-height: 50px;
+
+    }
+
+    .screen, .shop-pages, .shop-page{
+      width: 100%;
+      height: 100%;
+      position: relative;
+      box-sizing: border-box;
+    }
+
+    .layer{
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      width: 100%;
+      height: 100%;
+      background-size: 100%;
+      background-position: center;
+      box-sizing: border-box;
+      text-align: center;
+    }
+
+    .device{
+      /*1100 x 620*/
+      width: 100%;
+      height: 100%;
+      /*width: 1100px;
+      height: 560px;*/
+      position: fixed;
+      top: 0px;
+      left: 0px;
+      right: 0px;
+      bottom: 0px;
+      margin: auto;
+      background: white;
+      overflow: hidden;
+    }
+
+    .device:after{
+      content: "";
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      width: 100%;
+      height: 100%;
+      display: block;
+      background-size: 100% 100%;
+      pointer-events: none;
+    }
+
+    b{
+      font-weight: normal;
+      background: var(--col-b);
+      color: white;
+    }
+
+    .ingredient .wd{
+      position: absolute;
+      top: 10px;
+      right: 10px;
+    }
+
+    .wd{
+      font-weight: normal;
+      background: var(--col-b);
+      color: white;
+      font-size: 35px;
+      display: inline-block;
+      padding: 0px 5px;
+      line-height: 40px;
+    } 
+
+    wd{
+      width: 15px;
+      height: 20px;
+      background-image: url('./water-dollar-symbol.png');
+      display: inline-block;
+      background-size: contain;
+      vertical-align: bottom;
+      background-repeat: no-repeat;
+      image-rendering: pixelated;
+    }
+
+    .ingredient.selected wd{
+      background-image: url('./water-dollar-white.png');
+    }
+
+    .wd:before, .wd-alloc:before{
+      content: "";
+      width: 20px;
+      height: 25px;
+      background-image: url('./water-dollar-white.png');
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      display: inline-block;
+      vertical-align: middle;
+      position: relative;
+      top: -3px;
+      image-rendering: pixelated;
+    }
+
+    .wd.neg{
+      padding-left: 20px;
+      background: var(--col-a);
+      position: relative;
+    }
+
+    .wd.total{
+      background: var(--col-b);
+    }
+
+    .wd.neg:after{
+      content: "-";
+      position: absolute;
+      color: white;
+      left: 5px;
+      top: 0px;
+    }
+
+    .screen-selector{
+      padding: 50px 100px;
+    }
+
+    .screen-selector h1{
+      margin-bottom: 10px;
+    }
+
+    .wd-alloc{
+      position: absolute;
+      right: 100px;
+      top: 0px;
+      background: var(--col-b);
+      display: inline-block;
+      color: white;
+      font-size: 50px;
+      padding: 10px 10px 0px;
+      transition: all 0.5s;
+    }
+
+    .wd-alloc:before{
+      width: 30px;
+      height: 40px;
+    }
+
+    .wd-alloc.hidden{
+      top: -80px;
+    }
+
+    .breadcrumbs.hidden{
+      bottom: -150px;
+    }
+
+    .breadcrumbs{
+      position: absolute;
+      bottom: 0px;
+      left: 100px;
+      padding: 0px;
+      margin: 0px;
+      list-style: none;
+      transition: all 0.5s;
+
+    }
+
+    .breadcrumbs li{
+      padding: 0px 10px;
+      margin: 0px 1px;
+      background: #999;
+      color: white;
+      display: inline-block;
+      padding-bottom: 20px;
+      vertical-align: bottom;
+      transition: all 0.5s;
+      text-align: center;
+    }
+
+    .breadcrumbs li.active{
+      background: var(--col-a);
+      padding-bottom: 40px;
+    }
+
+    .wd-chart{
+      list-style: none;
+      padding: 0px;
+      margin: 0px;
+    }
+
+    .wd-chart li{
+      padding: 0px;
+      text-align: left;
+    }
+
+
+
+    .wd-stat{
+      
+      text-align: right;
+      display: inline-block;
+      margin-right: 10px;
+    }
+
+    .wd-stat.pos{
+      color: var(--col-b);
+    }
+
+    .wd-chart .wd-stat{
+      width: 65%;
+    }
+
+    .overspend{
+      background: red;
+    }
+
+    .ing{
+      width: 100px;
+      height: 0px;
+      display: block;
+      position: relative;
+      margin: auto;
+      background-position:center;
+      background-size: contain;
+      background-repeat: no-repeat;
+      transition: all 0.5s;
+      opacity: 0;
+    }
+
+    .breadcrumbs li.populated .ing{
+      height: 80px;
+      opacity: 1;
+    }
+
+    .ing-summary{
+      width: 100%;
+      height: 200px;
+      
+      background-position:center;
+      background-size: contain;
+      background-repeat: no-repeat;
+      position: relative;
+
+      position: absolute;
+      top: 0px;
+      left: 0px;
+    }
+
+    .summary{
+      width: 50%;
+      position: absolute;
+      bottom: 400px;
+      left: 0px;
+    }
+
+    .summary-box{
+      width:450px;
+
+      position: absolute;
+      left:50%;
+      right:0px;
+      margin:auto;
+      margin-top: 100px;
+    }
+
+    .summary-box h2{
+      margin: 0px;
+      padding: 0px;
+    }
+
+    .summary-box .name{
+      width: 310px;
+      display: inline-block;
+    }
+
+    .summary-box .wd{
+      width: 100px;
+      
+    }
+
+    .pins{
+      position: relative;
+    }
+
+    .pin{
+      width: 50px;
+      height: 70px;
+      border-bottom: 4px solid var(--col-a);
+
+      display: inline-block;
+      border-top-width: 3px;
+      vertical-align: middle;
+      font-size: 50px;
+    }
+
+    .pin.focus{
+      animation: throb 1s infinite;
+    }
+
+    .keypad{
+      text-align: center;
+    }
+
+    .keypad button{
+      width: 50px;
+      height: 70px;
+      display: inline-block;
+      background: white;
+      color: var(--col-b);
+      font-size: 50px;
+      margin: 5px;
+      border-color: var(--col-b);
+      border-bottom-width: 4px;
+      vertical-align: middle;
+    }
+
+    .keypad button:after{
+      display: none;
+    }
+
+
+    .cursor{
+      display: inline;
+      background: var(--col-a);
+      animation-name: throb; 
+      animation-duration: 1s;
+      animation-iteration-count: infinite;
+    }
+
+    .cursor:after{
+      content: "_"
+    }
+
+    @keyframes throb{
+      0%{
+        background-color: var(--col-a);
+      }
+
+      50%{
+        background-color: var(--col-a);
+      }
+
+      55%{
+        background-color: transparent;
+      }
+
+      100%{
+        background-color: transparent;
+      }
+    }

@@ -68,6 +68,14 @@ layers = [
   }
 ]
 
+DATA.sequence = [
+  {type:'screen-herald', copy:'welcome'},
+  {type:'screen-lecture', copy:'yo'},
+  {type:'screen-alloc'},
+  {type:'screen-shop', layers:layers },
+  {type:'screen-herald', copy:'thanks'},
+]
+
 
 
 
