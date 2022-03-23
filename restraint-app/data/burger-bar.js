@@ -69,11 +69,11 @@ layers = [
 ]
 
 DATA.sequence = [
-  {type:'screen-herald', copy:'welcome'},
+  {type:'screen-herald', copy:'Welcome to the<br>Water Dollar<br>Burger Bar'},
   {type:'screen-lecture', copy:'yo'},
   {type:'screen-alloc'},
   {type:'screen-shop', layers:layers },
-  {type:'screen-herald', copy:'thanks'},
+  {type:'screen-herald', copy:'Thankyou for making choices that support a fair water distribution for all.'},
 ]
 
 
