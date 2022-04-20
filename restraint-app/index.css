@@ -18,6 +18,11 @@
     h1{
       margin: 0px;
       padding: 0px;
+      font-weight: normal;
+    }
+
+    h2{
+      font-weight: normal;
     }
 
     button{
@@ -144,22 +149,6 @@
       color: white;
     }
 
-    .ingredient .wd{
-      position: absolute;
-      top: 10px;
-      right: 10px;
-    }
-
-    .wd{
-      font-weight: normal;
-      background: var(--col-b);
-      color: white;
-      font-size: 35px;
-      display: inline-block;
-      padding: 0px 5px;
-      line-height: 40px;
-    } 
-
     wd{
       width: 15px;
       height: 20px;
@@ -171,41 +160,6 @@
       image-rendering: pixelated;
     }
 
-    
-
-    .wd:before, .wd-alloc:before{
-      content: "";
-      width: 20px;
-      height: 25px;
-      background-image: url('./water-dollar-white.png');
-      background-size: contain;
-      background-position: center;
-      background-repeat: no-repeat;
-      display: inline-block;
-      vertical-align: middle;
-      position: relative;
-      top: -3px;
-      image-rendering: pixelated;
-    }
-
-    .wd.neg{
-      padding-left: 20px;
-      background: var(--col-a);
-      position: relative;
-    }
-
-    .wd.total{
-      background: var(--col-b);
-    }
-
-    .wd.neg:after{
-      content: "-";
-      position: absolute;
-      color: white;
-      left: 5px;
-      top: 0px;
-    }
-
     .screen-selector{
       padding: 50px 100px;
     }
@@ -213,42 +167,6 @@
     .screen-selector h1{
       margin-bottom: 10px;
     }
-
-    
-
-    .wd-chart{
-      list-style: none;
-      padding: 0px;
-      margin: 0px;
-    }
-
-    .wd-chart li{
-      padding: 0px;
-      text-align: left;
-    }
-
-
-
-    .wd-stat{
-      
-      text-align: right;
-      display: inline-block;
-      margin-right: 10px;
-    }
-
-    .wd-stat.pos{
-      color: var(--col-b);
-    }
-
-    .wd-chart .wd-stat{
-      width: 65%;
-    }
-
-    .overspend{
-      background: red;
-    }
-
-    
 
     .pins{
       position: relative;

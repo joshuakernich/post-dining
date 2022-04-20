@@ -8,12 +8,11 @@ function makeDescription(LitresPerKG,WDPerGram,grams){
 var layers = [
   {
     title:"Select your <b>Carbohydrate</b>",
-    isABurger:true,
     short: "Carbohydrate",
     list:[
-      {name:"Wheat bun with sesame",  wd:120,   d:makeDescription(2000,2,60),      img:'./burger/burger0018.png', top:'./burger/burger0015.png', bottom:'./burger/burger0012.png'},
-      {name:"Dark Rye",               wd:90,    d:makeDescription(1500,1.5,60),    img:'./burger/burger0017.png', top:'./burger/burger0014.png', bottom:'./burger/burger0011.png'},
-      {name:"Native Millet",          wd:72,    d:makeDescription(1200,1.2,60),    img:'./burger/burger0016.png', top:'./burger/burger0013.png', bottom:'./burger/burger0010.png'},
+      {name:"Wheat bun with sesame",  isABurger:true, wd:120,   d:makeDescription(2000,2,60),      img:'./burger/burger0018.png', top:'./burger/burger0015.png', bottom:'./burger/burger0012.png'},
+      {name:"Dark Rye",               isABurger:true, wd:90,    d:makeDescription(1500,1.5,60),    img:'./burger/burger0017.png', top:'./burger/burger0014.png', bottom:'./burger/burger0011.png'},
+      {name:"Native Millet",          isABurger:true, wd:72,    d:makeDescription(1200,1.2,60),    img:'./burger/burger0016.png', top:'./burger/burger0013.png', bottom:'./burger/burger0010.png'},
     ]
   },{
     title:"Select your <b>Protein</b>",
