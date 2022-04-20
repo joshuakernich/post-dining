@@ -3,46 +3,58 @@
 <head>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <title>Restraint</title>
-   <script type="text/javascript" src='./jq.js'></script>
-   <script type="text/javascript" src='./shop.js'></script>
+   <script type="text/javascript" src='./js/jq.js'></script>
+   <script type="text/javascript" src='./js/screen-pin.js'></script>
+   <script type="text/javascript" src='./js/screen-shop.js'></script>
+   <script type="text/javascript" src='./js/screen-herald.js'></script>
+   <script type="text/javascript" src='./js/screen-alloc.js'></script>
+   <script type="text/javascript" src='./js/screen-lecture.js'></script>
    <script type="text/javascript">
     
     // changeable data
-    var layers = [];
-    var intro = "";
-    var outro = "";
-    var alloc = 152;
-    var isMuted = false;
-    var skipAllocation = false;
-
     var DATA = {};
 
    </script>
-   <script type="text/javascript" src='./data/burger-bar.js'></script>
+   <script type="text/javascript" src='./data/data-burger-bar.js'></script>
+   <!--script type="text/javascript" src='./data/data-show.js'></script-->
    <link rel="stylesheet" href="./index.css">
-   <style type="text/css">
-     .screen-templates{
-      display: none;
-     }
-   </style>
+   <link rel="stylesheet" href="./shop.css">
   
   <script type="text/javascript">
 
 
     $(function(){
 
+      var types = {
+        'screen-herald':ScreenHerald,
+        'screen-lecture':ScreenLecture,
+        'screen-alloc':ScreenAlloc,
+        'screen-shop':ScreenShop,
+        'screen-pin':ScreenPin,
+      }
+
+      var utils = {
+        utter:utter,
+        toNextScreen:toNextScreen,
+        doAnimatedType:doAnimatedType,
+        doAnimatedStat:doAnimatedStat,
+      }
+
+      var screens = [];
+
+      var synth = window.speechSynthesis;
+      var utters = [];
+
       //load up the data
       for(var s in DATA.sequence){
         var def = DATA.sequence[s];
         var $s = $('.screen-templates .'+def.type).clone().appendTo('.device');
 
-        if(def.type == 'screen-herald') $s.find('h1').html(def.copy);
-        if(def.type == 'screen-shop') new Shop($s,def,utter);
+        var fn = types[def.type];
+        screens[s] = new fn($s,def,utils);
 
         $s.find('.action-to-next-screen').click(onNextScreen);
       }
-
-      
 
       function onNextScreen(e){
         toNextScreen(e.target);
@@ -50,21 +62,66 @@
 
       function toNextScreen(child){
         var idx = $('.device .screen').index($(child).closest('.screen'));
-        toScreen(idx+1);
+        if(idx+1 >= $('.device .screen').length){
+          window.location = window.location; // HARD RESET
+        } else {
+          toScreen(idx+1);
+        }
       }
 
       function toScreen(idx){
+
+        while(utters.length) clearInterval(utters.pop());
+        synth.cancel();
+
         $('.device .screen').hide().eq(idx).show();
+        if(screens[idx].activate) screens[idx].activate();
       }
 
       function utter(text,delay){
-        if(isMuted) return;
+        if(DATA.isMuted) return;
         utters.push( setTimeout(function(){
             var utter = new SpeechSynthesisUtterance(text);
             utter.voice = synth.getVoices()[0];
             synth.speak(utter);
           },delay));
       }
+
+      function doAnimatedType( $d, delay, bUtter ){
+        var text = $d.text();
+        var chars = '<span>'+text.split('').join('</span><span>') + '</span>';
+        $d.html(chars);
+
+        $d.find('span').each(function(i){
+
+          $(this).css({opacity:0,background:'orange'}).delay(delay+i*50).animate({opacity:1},40,function(){
+            $(this).css({background:'transparent'});
+          });
+        });
+
+        if(bUtter){
+          utter(text,delay);
+        }
+
+        return text.length*50;
+      }
+
+      function doAnimatedStat( $d, delay ){
+        var text = $d.text();
+        var int = parseInt(text);
+        $d.css({opacity:0}).delay(delay).animate({opacity:1},10);
+
+        $d.text('0');
+        
+        $({int:0}).delay(delay).animate({int:int},{duration:text.length*100,step:function(val){
+          
+          $d.text(Number(Math.floor(val)).toLocaleString());
+          $('.sound-blip')[0].play();
+        }})
+
+        return text.length*100;
+      }
+
 
       /*for(var l in layers){
         var $s = $('<div class="screen screen-selector screen-breadcrumbed">').insertBefore('.screen-checkout');
@@ -93,7 +150,7 @@
 
       $('.intro-monologue').html(intro);
 
-      var synth = window.speechSynthesis;
+      
      
       var spend = [0,0,0];
       var utters = [];
@@ -109,57 +166,9 @@
         window.location = window.location;
       })
 
-      for(var i=0; i<10; i++){
-        $("<button>").appendTo('.keypad').text(i).click(onPin);
-      }
+      
 
-      $("<button>").appendTo('.keypad').text('←').click(onPinBack);
-
-      var iPin = 0;
-
-      function onPin(){
-       $('.pin').eq(iPin).text( $(this).text() ).removeClass('focus');
-       iPin++;
-       $('.pin').eq(iPin).addClass('focus');
-
-       var scope = this;
-       if(iPin==4){
-          setTimeout(function(){
-            toNextScreen(scope);
-          },1000)
-          $('.sound-select')[0].play();
-          
-        } else {
-          $('.sound-blip')[0].play();
-        }
-        
-      }
-
-      function onPinBack(){
-        $('.pin').eq(iPin).removeClass('focus');
-        iPin--;
-        $('.pin').eq(iPin).text('').addClass('focus');
-        $('.sound-blip')[0].play();
-      }
-
-      function doAnimatedType( $d, delay, bUtter ){
-        var text = $d.text();
-        var chars = '<span>'+text.split('').join('</span><span>') + '</span>';
-        $d.html(chars);
-
-        $d.find('span').each(function(i){
-
-          $(this).css({opacity:0,background:'orange'}).delay(delay+i*50).animate({opacity:1},40,function(){
-            $(this).css({background:'transparent'});
-          });
-        });
-
-        if(bUtter){
-          utter(text,delay);
-        }
-
-        return text.length*50;
-      }
+      
 
 
       function utter(text,delay){
@@ -171,21 +180,7 @@
           },delay));
       }
 
-      function doAnimatedStat( $d, delay ){
-        var text = $d.text();
-        var int = parseInt(text);
-        $d.css({opacity:0}).delay(delay).animate({opacity:1},10);
-
-        $d.text('0');
-        
-        $({int:0}).delay(delay).animate({int:int},{duration:text.length*100,step:function(val){
-          
-          $d.text(Number(Math.floor(val)).toLocaleString());
-          $('.sound-blip')[0].play();
-        }})
-
-        return text.length*100;
-      }
+      
 
 
       $('.screen-lecture button, .screen-alloc button, .screen-checkout button').click(function(){
@@ -308,17 +303,11 @@
         $(this).addClass('active');
       })
 
-      $('.breadcrumbs li').click(function(){
-        var i = $('.screen').index($('.screen-breadcrumbed').first());
-        var n = $('.breadcrumbs li').index(this);
-        toScreen(i+n);
-      })
+     
 
       */
     })
   </script>
-</head>
-<body>
   <div class="screen-templates">
     <div class="screen screen-pin">
       <div class="layer" style="opacity:0.2;background-image: url(./globe-orange.gif)"></div>
@@ -361,10 +350,7 @@
        <div class="layer">
         <div class="box" style="text-align: left;padding:20px 50px;margin-top: 50px;">
           <div class="intro-monologue">
-            <p>Hello there,</p>
-            <p>Welcome to the Global Water Allocation Trust Canteen Kiosk.</p>
-            <p>Today, you will be granted the privelege to attenuate and redeem a socially responsible canapé.</p>
-            <p>Your compliance is mandatory.</p>
+            <!-- lecture goes here -->
           </div>
         <button class="action-to-next-screen">Let's Crack On</button></div>
       </div>
@@ -423,6 +409,9 @@
       </div-->
     </div>
   </div>
+</head>
+<body>
+  
   <div class="device">
     
     

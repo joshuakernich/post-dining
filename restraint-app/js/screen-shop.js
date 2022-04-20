@@ -1,32 +1,33 @@
-Shop = function($s,def,utter){
+ScreenShop = function($s,def,utils){
 
   var $crumbs = $s.find('.breadcrumbs');
 
-  for(var l in layers){
-    var $p = $('<div class="shop-page">').insertBefore($s.find('.shop-page-checkout'));
-    $('<h1>'+layers[l].title+'</h1>').appendTo($p);
+  for(var il in def.layers){
 
-    for(var i in layers[l].list){
+    var l = def.layers[il];
+
+    var $p = $('<div class="shop-page">').insertBefore($s.find('.shop-page-checkout'));
+    $('<h1>'+l.title+'</h1>').appendTo($p);
+
+    for(var i in l.list){
       var $ing = $('<div class="ingredient">\
-        <div class="ingredient-img" style="background-image:url('+layers[l].list[i].img+')"></div>\
-        <h2><span class="name">'+layers[l].list[i].name+'</span> <span class="wd">'+layers[l].list[i].wd+'</span></h2>\
-        <p>'+layers[l].list[i].d+'</p>\
+        <div class="ingredient-img" style="background-image:url('+l.list[i].img+')"></div>\
+        <h2><span class="name">'+l.list[i].name+'</span> <span class="wd">'+l.list[i].wd+'</span></h2>\
+        <p>'+l.list[i].d+'</p>\
         <button></button>\
       </div>').appendTo($p);
 
-      $ing.data('bean',layers[l].list[i]);
-      if(layers[l].isABurger) $ing.addClass('is-a-burger');
-
-
+      $ing.data('bean',l.list[i]);
+      if(l.isABurger) $ing.addClass('is-a-burger');
     }
 
-    $('<li>'+layers[l].short+'<div class="ing"></div></li>').insertBefore( $s.find('.breadcrumbs li:last-of-type'));
+    $('<li>'+l.short+'<div class="ing"></div></li>').insertBefore( $s.find('.breadcrumbs li:last-of-type'));
     $('<h2><span class="name">-</span> <span class="wd">0</span></h2>').insertBefore( $s.find('.summary-box hr'));
     $('<div class="ing-summary"></div>').appendTo( $s.find('.summary') );
-    $('.wd-of').text(alloc);
+    $('.wd-of').text(def.alloc);
 
     //add an extra layer for the burger top
-    if(layers[l].isABurger) $('<div class="ing-summary"></div>').appendTo( $s.find('.summary') );
+    if(l.isABurger) $('<div class="ing-summary"></div>').appendTo( $s.find('.summary') );
   }
 
   function toNextPage(scope){
@@ -35,11 +36,23 @@ Shop = function($s,def,utter){
   }
 
   function toPage(i){
-    $s.find('.shop-page').hide().eq(i).show();
+    var $p = $s.find('.shop-page').hide().eq(i).show();
     $s.find('.breadcrumbs li').removeClass('active').eq(i).addClass('active');
+
+    if($p.is('.shop-page-checkout')) {
+      //make the burger drop in
+      $p.find('.ing-summary').each(function(n){
+        $(this).css({top:-n*30-500}).delay(n*100).animate({top:-n*30})
+      })
+    }
   }
 
   toPage(0);
+
+  $s.find('.breadcrumbs li').click(function(){
+    var n = $s.find('.breadcrumbs li').index(this);
+    toPage(n);
+  })
 
   $s.find('.ingredient').click(function(){
     $(this).closest('.shop-page').find('.ingredient').removeClass('active');
@@ -89,14 +102,13 @@ Shop = function($s,def,utter){
         $s.find('.ing-summary').eq(idxBreadcrumb).css({'background-image':img});
       }
 
-      utter($ing.find('.name').text());
+      utils.utter($ing.find('.name').text());
 
       var me = this;
       setTimeout(function(){
         toNextPage(me);
       },1000)
     }
-
 
     var total = 0;
      $s.find('.summary-box .wd:not(.wd-total)').each(function(){
@@ -106,7 +118,7 @@ Shop = function($s,def,utter){
      $s.find('.wd-spent').text(total);
 
      $s.find('.wd-alloc').removeClass('overspend');
-     if(total>alloc) $s.find('.wd-alloc').addClass('overspend');
+     if(total>def.alloc) $s.find('.wd-alloc').addClass('overspend');
   })
 
   $s.find('.shop-page').hide().eq(0).show();

@@ -1,0 +1,210 @@
+.shop-page{
+  padding: 50px;
+}
+
+.shop-page h1{
+  margin-bottom: 20px;
+}
+
+.hamburger{
+  margin: 5vh 0px;
+}
+
+.hamburger-layer{
+  white-space: nowrap;
+  overflow-x: scroll;
+}
+
+.ingredient{
+  display: inline-block;
+  white-space: normal;
+
+  text-align: center;
+  width: 220px;
+  vertical-align: top;
+  position: relative;
+  overflow: hidden;
+  height: 200px;
+  transition: width 0.5s, height 0.5s;
+  margin-right: 5px;
+}
+
+.ingredient.static{
+  transition: none;
+}
+
+.ingredient h2{
+  white-space: nowrap;
+  line-height: 70px;
+  margin: 0px;
+  padding: 0px;
+}
+
+.ingredient-img{
+  width: 100%;
+  height: 200px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 90%;
+}
+
+.ingredient p{
+  text-align: left;
+  padding: 0px 20px; 
+  font-size: 20px;
+  margin: 0px;
+}
+
+.ingredient.active{
+  height: 360px;
+  width: 400px;
+  background: white;
+}
+
+.ingredient.selected{
+  background: var(--col-a);
+  color: white;
+}
+
+.ingredient button:before{
+  content: "CONFIRM";
+}
+
+.ingredient.selected button:before{
+  content: "REMOVE";
+}
+
+.ingredient.selected wd{
+  background-image: url('./water-dollar-white.png');
+}
+
+.wd-alloc{
+  position: absolute;
+  right: 100px;
+  top: 0px;
+  background: var(--col-b);
+  display: inline-block;
+  color: white;
+  font-size: 50px;
+  padding: 10px 10px 0px;
+  transition: all 0.5s;
+}
+
+.wd-alloc:before{
+  width: 30px;
+  height: 40px;
+}
+
+.wd-alloc.hidden{
+  top: -80px;
+}
+
+.breadcrumbs.hidden{
+  bottom: -150px;
+}
+
+.breadcrumbs{
+  position: absolute;
+  bottom: 0px;
+  left: 100px;
+  padding: 0px;
+  margin: 0px;
+  list-style: none;
+  transition: all 0.5s;
+
+}
+
+.breadcrumbs li{
+  padding: 0px 10px;
+  margin: 0px 1px;
+  background: #999;
+  color: white;
+  display: inline-block;
+  padding-bottom: 20px;
+  vertical-align: bottom;
+  transition: all 0.5s;
+  text-align: center;
+}
+
+.breadcrumbs li.active{
+  background: var(--col-a);
+  padding-bottom: 40px;
+}
+
+.ing{
+  width: 100px;
+  height: 0px;
+  display: block;
+  position: relative;
+  margin: auto;
+  background-position:center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  transition: all 0.5s;
+  opacity: 0;
+}
+
+.breadcrumbs li.populated .ing{
+  height: 80px;
+  opacity: 1;
+}
+
+.ing-summary{
+  width: 100%;
+  height: 200px;
+  
+  background-position:center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  position: relative;
+
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+
+.ing-summary:nth-of-type(6){ top:-500px; }
+.ing-summary:nth-of-type(5){ top:-400px; }
+.ing-summary:nth-of-type(4){ top:-300px; }
+.ing-summary:nth-of-type(3){ top:-200px; }
+.ing-summary:nth-of-type(2){ top:-100px; }
+.ing-summary:nth-of-type(1){ top:0px; }
+
+.ing-summary:nth-of-type(6){ top:-200px; }
+.ing-summary:nth-of-type(5){ top:-160px; }
+.ing-summary:nth-of-type(4){ top:-120px; }
+.ing-summary:nth-of-type(3){ top:-80px; }
+.ing-summary:nth-of-type(2){ top:-40px; }
+.ing-summary:nth-of-type(1){ top:0px; }
+
+.summary{
+  width: 50%;
+  position: absolute;
+  bottom: 400px;
+  left: 0px;
+}
+
+.summary-box{
+  width:450px;
+
+  position: absolute;
+  left:50%;
+  right:0px;
+  margin:auto;
+  margin-top: 50px;
+}
+
+.summary-box h2{
+  margin: 0px;
+  padding: 0px;
+}
+
+.summary-box .name{
+  width: 310px;
+  display: inline-block;
+}
+
+.summary-box .wd{
+  width: 100px;
+  
+}
