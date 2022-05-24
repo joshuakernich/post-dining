@@ -49,7 +49,7 @@ var layers = [
   }
 ]
 
-DATA.sequence = [
+DATA.BURGER = [
   {type:'screen-herald', copy:'<img src="./img/burger-bar.png"><br>Welcome to the<br>Water Dollar Burger Bar'},
   {type:'screen-lecture', copy:'<p>Hello there,</p>\
 <p>Welcome to the Burger Bar. Instead of using Australian Dollars, everything here is priced by its Water Footprint.</p>\
@@ -58,8 +58,6 @@ DATA.sequence = [
   {type:'screen-shop', layers:layers, alloc:400 },
   {type:'screen-herald', copy:'Thankyou for making choices that support a fair water distribution for all.'},
 ]
-
-DATA.isMuted = true;
 
 
 

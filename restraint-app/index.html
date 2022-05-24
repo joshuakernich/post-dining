@@ -15,7 +15,7 @@
     var DATA = {};
 
    </script>
-   <!--script type="text/javascript" src='./data/data-burger-bar.js'></script-->
+   <script type="text/javascript" src='./data/data-burger-bar.js'></script>
    <script type="text/javascript" src='./data/data-show.js'></script>
    <link rel="stylesheet" href="./index.css">
    <link rel="stylesheet" href="./shop.css">
@@ -24,6 +24,16 @@
 
 
     $(function(){
+      DATA.sequence = DATA.SHOW; // show by default
+
+      if(window.location.href.indexOf('burger')>-1){
+        DATA.sequence = DATA.BURGER;
+        DATA.isMuted = true;
+      }
+      start();
+    })
+
+    function start(){
 
       var types = {
         'screen-herald':ScreenHerald,
@@ -71,8 +81,6 @@
       }
 
       function toScreen(idx){
-
-        console.log('toScreen',idx,screens[idx].activate);
         while(utters.length) clearInterval(utters.pop());
         synth.cancel();
 
@@ -125,192 +133,8 @@
       }
 
       toScreen(0);
+    }
 
-
-      /*for(var l in layers){
-        var $s = $('<div class="screen screen-selector screen-breadcrumbed">').insertBefore('.screen-checkout');
-        $('<h1>'+layers[l].title+'</h1>').appendTo($s);
-
-        for(var i in layers[l].list){
-          var $ing = $('<div class="ingredient">\
-            <div class="ingredient-img" style="background-image:url('+layers[l].list[i].img+')"></div>\
-            <h2><span class="name">'+layers[l].list[i].name+'</span> <span class="wd">'+layers[l].list[i].wd+'</span></h2>\
-            <p>'+layers[l].list[i].d+'</p>\
-            <button></button>\
-          </div>').appendTo($s);
-
-          $ing.data('bean',layers[l].list[i]);
-          if(layers[l].isABurger) $ing.addClass('is-a-burger');
-        }
-
-        $('<li>'+layers[l].short+'<div class="ing"></div></li>').insertBefore('.breadcrumbs li:last-of-type');
-        $('<h2><span class="name">-</span> <span class="wd">0</span></h2>').insertBefore('.summary-box hr');
-        $('<div class="ing-summary"></div>').appendTo('.summary');
-        $('.wd-of').text(alloc);
-
-        //add an extra layer for the burger top
-        if(layers[l].isABurger) $('<div class="ing-summary"></div>').appendTo('.summary');
-      }
-
-      $('.intro-monologue').html(intro);
-
-      
-     
-      var spend = [0,0,0];
-      var utters = [];
-
-      toScreen(0);
-
-      $('.action-to-next-screen').click(function(){
-        toNextScreen(this);
-      })
-
-      $('.action-to-start').click(function(){
-        //toScreen(0);
-        window.location = window.location;
-      })
-
-      
-
-      
-
-
-      function utter(text,delay){
-        if(isMuted) return;
-        utters.push( setTimeout(function(){
-            var utter = new SpeechSynthesisUtterance(text);
-            utter.voice = synth.getVoices()[0];
-            synth.speak(utter);
-          },delay));
-      }
-
-      
-
-
-      $('.screen-lecture button, .screen-alloc button, .screen-checkout button').click(function(){
-        $('.sound-select')[0].play();
-      })
-
-
-      function toNextScreen(child){
-        var idx = $('.screen').index($(child).closest('.screen'));
-        toScreen(idx+1);
-      }
-
-      function toScreen(idx){
-
-        while(utters.length) clearInterval(utters.pop());
-        synth.cancel();
-
-        var $s = $('.screen').hide().eq(idx).show();
-
-        if($s.is('.screen-selector')){
-          
-          $s.find('h1').css({position:'relative',top:-200}).animate({top:0});
-
-
-          utter($s.find('h1').text(),500);
-
-          $s.find('.ingredient').each(function(i){
-
-            $(this).addClass('static').width(0).height(0).delay((i+1)*300).animate({width:220,height:10},300).delay(100).animate({height:200},300,function(){
-              $(this).removeClass('static').css({width:'',height:''});
-            });
-
-
-          })
-        } else if($s.is('.screen-alloc')){
-          
-          if(skipAllocation){
-            toNextScreen($s);
-            return;
-          }
-
-          var d = 500;
-
-          d += doAnimatedType( $s.find('.stockpile .wd-stat'), d ) + 500;
-          d += doAnimatedStat( $s.find('.stockpile .wd'), d ) + 1000;
-          d += doAnimatedType( $s.find('h2'), d, true ) + 1000;
-
-          $s.find('.wd-chart li').each(function(){
-            d += doAnimatedType( $(this).find('.wd-stat'), d ) + 800;
-            d += doAnimatedStat( $(this).find('.wd'), d ) + 500;
-          })
-
-          utter("Your allocation for today is "+alloc+" water dollars.",d);
-
-          $s.find('button').css({opacity:0}).delay(d).animate({opacity:1},100);
-   
-        } else if($s.is('.screen-checkout')){
-
-          $s.find('.ing-summary').each(function(n){
-            $(this).css({top:-500}).delay(400*(n+1)).animate({top:-50*n});
-          })
-
-
-          var total = 0;
-           $('.summary-box .wd:not(.wd-total)').each(function(){
-            total += parseFloat($(this).text());
-           })
-
-           $('.summary-box .wd-total').text(total);
-
-            $('.summary-box h2').each(function(n){
-              doAnimatedType($(this).find('.name'),1000+n*200);
-              doAnimatedStat($(this).find('.wd'),1200+n*200);
-            })
-
-            
-
-           if(total>alloc){
-              $('.wd-total').addClass('overspend');
-              $('.alloc-error').show();
-              $s.find('button').hide();
-              doAnimatedType($('.alloc-error'),2500,true);
-            } else {
-              $('.wd-total').removeClass('overspend');
-              $('.alloc-error').hide();
-              $s.find('button').show().css({opacity:0}).delay(2500).animate({opacity:1},100);
-              utter("A fine selection for a socially responsible member of society.",2000)
-            }
-
-            
-
-        } else if($s.is('.screen-lecture')){
-
-          var delay = 500;
-          $s.find('p').each(function(){
-            delay += doAnimatedType($(this),delay,true) + 1000;
-          })
-
-          
-        } else if($s.is('.screen-outro')){
-          //utter("Thank you for trusting GWAT. Your Global Water Allocation Trust... Your personal Canapé Code is... A... 2... B.",500);
-          utter(outro,500);
-        }
-
-        if($s.is('.screen-breadcrumbed')){
-          $('.wd-alloc').removeClass('hidden');
-          $('.breadcrumbs').removeClass('hidden');
-          
-          var idx = $('.screen-breadcrumbed').index($s);
-          $('.breadcrumbs li').removeClass('active').eq(idx).addClass('active');
-
-        } else {
-          $('.wd-alloc').addClass('hidden');
-          $('.breadcrumbs').addClass('hidden');
-        }
-      }
-
-      $('.ingredient').click(function(){
-        $(this).closest('.screen').find('.ingredient').removeClass('active');
-        $(this).addClass('active');
-      })
-
-     
-
-      */
-    })
   </script>
   <div class="screen-templates">
     <div class="screen screen-pin">

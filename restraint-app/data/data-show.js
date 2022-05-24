@@ -75,7 +75,7 @@ var allocations = [
   makeRandomAllocation(108),
 ]
 
-DATA.sequence = [
+DATA.SHOW = [
   {type:'screen-pin',profiles:profiles},
   {type:'screen-lecture', copy:'<p>Hello there,</p>\
 <p>Welcome to the Global Water Allocation Trust Canteen Kiosk.</p>\
@@ -118,49 +118,4 @@ DATA.sequence = [
   ] },
   {type:'screen-herald', copy:'Thankyou for using the Global Water Allocation Trust Canteen Kiosk.'},
 ]
-
-
-
-
-/*
-“GO” food (Go foods contain carbohydrates for energy)
-Rice cracker
-2628
-$7.89 ($2.63 per gram x 3g)
-
-Seed cracker
-6383
-$40.98 ($6.38 per gram x 6g)
-
-Wheat cracker
-1849
-$7.40 ($1.85 per gram x 4g)
-
-“GROW” food (GROW foods contain protein for muscle maintenance)
-Kangaroo mettwurst
-3000
-$45 ($3 per gram x 15g)
-
-Hommus
-2700
-$40.50 ($2.70 per gram x 15g)
-
-Cheese
-3968
-$59.55 ($3.97 per gram x 15g)
-
-Beef
-15,182
-$227.70 ($15.18  per gram x 15g)
-
-GLOW food (GLOW foods provide vitamins, minerals and phytonutrients for metabolism and immunity)
-Native Herb
-150
-$0.15 ($0.15 per gram x 1g)
-Dijon Mustard
-2200
-$4.40 ($2.2 per gram x 2g)
-Tomato relish
-534
-$1.63 ($0.534 per gram x 3g)*/
 
