@@ -32,8 +32,8 @@
       background: white;
       border: none;
       padding: 10px;
-      width: calc( 100% - 20px );
-      margin: 10px;
+      width: 100%;
+      margin: 15px 0px 0px 0px;
 
       border: 1px solid var(--col-a);
       text-transform: uppercase;
@@ -77,6 +77,8 @@
       border-left: 0px;
       display: block;
     }
+
+
 
 
 
@@ -174,34 +176,52 @@
 
     .pin{
       width: 50px;
-      height: 70px;
+      height: 50px;
       border-bottom: 4px solid var(--col-a);
 
       display: inline-block;
       border-top-width: 3px;
       vertical-align: middle;
       font-size: 50px;
+      text-transform: uppercase;
     }
 
     .pin.focus{
       animation: throb 1s infinite;
     }
 
+    .pin.error{
+      color: red;
+      background: rgba(255,0,0,0.1);
+      border-color: red;
+    }
+
+    .pin.correct{
+      border-color: var(--col-b);
+      color: var(--col-b);
+      background: rgba(0,170,255,0.2);
+    }
+
     .keypad{
       text-align: center;
+      position: absolute;
+      bottom: 0px;
+      left: 0px;
+      right: 0px;
     }
 
     .keypad button{
       width: 50px;
-      height: 70px;
+      height: 50px;
       display: inline-block;
       background: white;
       color: var(--col-b);
       font-size: 50px;
-      margin: 5px;
+      margin: 2px;
       border-color: var(--col-b);
       border-bottom-width: 4px;
       vertical-align: middle;
+      line-height: 25px;
     }
 
     .keypad button:after{

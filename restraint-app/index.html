@@ -15,8 +15,8 @@
     var DATA = {};
 
    </script>
-   <script type="text/javascript" src='./data/data-burger-bar.js'></script>
-   <!--script type="text/javascript" src='./data/data-show.js'></script-->
+   <!--script type="text/javascript" src='./data/data-burger-bar.js'></script-->
+   <script type="text/javascript" src='./data/data-show.js'></script>
    <link rel="stylesheet" href="./index.css">
    <link rel="stylesheet" href="./shop.css">
   
@@ -38,6 +38,7 @@
         toNextScreen:toNextScreen,
         doAnimatedType:doAnimatedType,
         doAnimatedStat:doAnimatedStat,
+        alloc:100,
       }
 
       var screens = [];
@@ -71,6 +72,7 @@
 
       function toScreen(idx){
 
+        console.log('toScreen',idx,screens[idx].activate);
         while(utters.length) clearInterval(utters.pop());
         synth.cancel();
 
@@ -121,6 +123,8 @@
 
         return text.length*100;
       }
+
+      toScreen(0);
 
 
       /*for(var l in layers){
@@ -312,24 +316,27 @@
     <div class="screen screen-pin">
       <div class="layer" style="opacity:0.2;background-image: url(./globe-orange.gif)"></div>
       <div class="layer" style="text-align: center;">
-        <br>
-        <div class="box">
+        <!--div class="box">
           <img width="90"style="vertical-align:middle;display: inline-block;" src='./water-dollar-symbol.png'>
           <div style="vertical-align:middle;display:inline-block;text-align:center;">
             <p style="font-size:180px;line-height:100px;margin:0px;">GWAT</p>
             <p style="margin:10px;font-size: 22px;">Global Water Allocation Trust</p>
           </div>
           <br>
-        </div><br>
-        <div class="box">
+        </div><br-->
+        <div class="box" style="margin-top:20px;">
         <h2>Enter Personal ID CODE</h2>
           <div class="pins">
             <div class="pin focus"></div>
             <div class="pin"></div>
             <div class="pin"></div>
             <div class="pin"></div>
+            <div class="pin"></div>
+            <div class="pin"></div>
           </div>
-           </div>
+          <br>
+          <p class="pin-feedback" style="margin:0px;"></p>
+        </div>
         <div class="keypad"></div>
       </div>
     </div>
@@ -343,10 +350,10 @@
         </div>
       </div>
     </div>
-    <div class="screen screen-lecture" style='padding:100px;'>
+    <div class="screen screen-lecture">
        <div class="layer" style="opacity:0.6;background-image: url(./ripples.gif)"></div>
        <div class="layer">
-        <div class="box" style="text-align: left;padding:20px 50px;margin-top: 50px;">
+        <div class="box" style="text-align: left;padding:0px 20px 20px;margin-top: 20px;">
           <div class="intro-monologue">
             <!-- lecture goes here -->
           </div>
@@ -356,8 +363,7 @@
     <div class="screen screen-alloc">
        <div class="layer" style="opacity:0.6;background-image: url(./ripples.gif)"></div>
        <div class="layer">
-        <br>
-        <div class="box">
+        <div class="box" style="margin-top:20px;">
 
           <p class="stockpile"><span class='wd-stat pos'>WORLD WATER stockpile</span><span class='wd'>89582618271</span></p>
           <h2 style="font-size: 35px;">Calculating personal water allocation.</h2>
@@ -522,6 +528,9 @@
   </audio>
   <audio class="sound-select">
     <source src="./select.wav" type="">
+  </audio>
+  <audio class="sound-error">
+    <source src="./error.wav" type="">
   </audio>
 </body>
 </html>

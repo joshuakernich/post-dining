@@ -3,6 +3,13 @@
 }
 
 .shop-page h1{
+  margin-bottom: 10px;
+}
+
+.shop-page h2.subtitle{
+  font-size: 25px;
+  color: #999;
+  margin: 0px;
   margin-bottom: 20px;
 }
 
@@ -27,6 +34,11 @@
   height: 200px;
   transition: width 0.5s, height 0.5s;
   margin-right: 5px;
+}
+
+.ingredient button{
+  margin: 10px;
+  width: calc(100% - 20px);
 }
 
 .ingredient.static{
@@ -222,6 +234,7 @@
 .summary-box .wd{
   width: 100px;
   vertical-align: top;
+  text-align: right;
 }
 
 .ingredient .wd{
