@@ -78,7 +78,7 @@ var allocations = [
 DATA.SHOW = [
   {type:'screen-pin',profiles:profiles},
   {type:'screen-lecture', copy:'<p>Hello there,</p>\
-<p>Welcome to the Global Water Allocation Trust Canteen Kiosk.</p>\
+<p>Welcome to the Global Water Allocation Trust Kiosk.</p>\
 <p>Today, you will be granted the privelege to digitally construct and redeem a socially responsible canapé.</p>\
 <p>Your compliance is mandatory.</p>'},
   {type:'screen-alloc', allocations:allocations },
