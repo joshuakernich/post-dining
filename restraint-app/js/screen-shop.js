@@ -5,6 +5,10 @@ ScreenShop = function($s,def,utils){
   var selections = [];
   var hasABurger = false;
   var wdSpend = 0;
+  var timeActivate;
+  var iTick;
+  var stampWas;
+  var $modal;
 
   for(var il in def.layers){
 
@@ -22,6 +26,7 @@ ScreenShop = function($s,def,utils){
         <button></button>\
       </div>').appendTo($p);
 
+      l.list[i].n = i;
       $ing.data('bean',l.list[i]);
 
       if(l.list[i].isABurger) hasABurger = true;
@@ -35,11 +40,43 @@ ScreenShop = function($s,def,utils){
     $('.wd-of').text(utils.alloc);
   }
 
+  if(def.doCodeGen){
+    $modal = $('<div class="layer shop-code-modal">').appendTo($s).hide();
+    var $box = $('<div class="box">').appendTo($modal);
+    $box.html("<h2>Your personal Canapé Code is</h2><h1 class='canape-code'>ZZZ</h1>");
+    $('<button>Finish</button>').appendTo($box).click(function(){
+      utils.toNextScreen(this);});
+    $s.find('.redeem').click(toCodeModal);
+  } else {
+    $s.find('.redeem').click(function(){
+      utils.toNextScreen(this);});
+  }
+
+  if(!def.timer) $s.find('.timer').hide();
+
   //add an extra layer for the burger top
   if(hasABurger) $('<div class="ing-summary"></div>').appendTo( $s.find('.summary') );
 
   function toWD(wd){
     return wd.toFixed(2);
+  }
+
+  function toCodeModal(isTimeUp){
+
+
+    clearInterval(iTick);
+
+    var alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    var code = '';
+    for(var n in selections) code += (selections[n].n != undefined)?alphabet[selections[n].n]:'Z';
+
+    if(isTimeUp == true) $modal.find('h2').html('Your time has elapsed.<br>Your personal Canapé Code is');
+    else $modal.find('h2').html('Your personal Canapé Code is');
+
+    $modal.find('.canape-code').text(code);
+    $modal.show();
+
+    utils.utter($modal.find('h2').text() + '...' + code.split('').join('...'));
   }
 
   function toNextPage(scope){
@@ -136,8 +173,43 @@ ScreenShop = function($s,def,utils){
 
   this.activate = function(){
     $('.wd-of').text(utils.alloc);
+    
     toPage(0);
+
+    if(def.timer){
+      timeActivate = new Date().getTime();
+      iTick = setInterval(tick,50);
+    }
   };
+
+  this.deactivate = function(){
+    clearInterval(iTick);
+    $('.timer').removeClass('warning');
+  }
+
+  function tick(){
+    var ms = def.timer * 1000 - ( new Date().getTime() - timeActivate );
+    if(ms<0) ms = 0;
+    var sec = Math.ceil(ms/1000);
+    var min = Math.floor(sec/60);
+
+    sec60 = sec%60;
+
+    var stamp = '' + min + ':' + (sec60<10?'0':'') + sec60;
+  
+    if(sec<=15){
+      
+      if(stampWas != stamp){
+        $s.find('.timer').addClass('warning');
+        $s.find('.timer').css({'font-size':'55px'}).animate({'font-size':'50px'},200);
+      }
+    }
+
+    if(ms == 0) toCodeModal(true);
+
+    $('.timer').text(stamp);
+    stampWas = stamp;
+  }
 
   $s.find('.breadcrumbs li').click(function(){
     var n = $s.find('.breadcrumbs li').index(this);
@@ -154,7 +226,7 @@ ScreenShop = function($s,def,utils){
     var $ing = $(this).closest('.ingredient');
     var isAlreadySelected = $ing.hasClass('selected');
 
-    $(this).closest('.screen').find('.ingredient').removeClass('selected');
+    $(this).closest('.shop-page').find('.ingredient').removeClass('selected');
 
     var iLayer = $s.find('.shop-page').index($(this).closest('.shop-page'));
 

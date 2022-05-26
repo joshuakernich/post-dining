@@ -2,6 +2,7 @@
 <html>
 <head>
   <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta charset="UTF-8">
   <title>Restraint</title>
    <script type="text/javascript" src='./js/jq.js'></script>
    <script type="text/javascript" src='./js/screen-pin.js'></script>
@@ -48,11 +49,11 @@
         toNextScreen:toNextScreen,
         doAnimatedType:doAnimatedType,
         doAnimatedStat:doAnimatedStat,
-        alloc:100,
+        alloc:400, // default for the burger bar
       }
 
+      var idxWas = -1;
       var screens = [];
-
       var synth = window.speechSynthesis;
       var utters = [];
 
@@ -81,11 +82,15 @@
       }
 
       function toScreen(idx){
+        if(screens[idxWas] && screens[idxWas].deactivate) screens[idxWas].deactivate();
+
         while(utters.length) clearInterval(utters.pop());
         synth.cancel();
 
         $('.device .screen').hide().eq(idx).show();
         if(screens[idx].activate) screens[idx].activate();
+
+        idxWas = idx;
       }
 
       function utter(text,delay){
@@ -181,7 +186,7 @@
           <div class="intro-monologue">
             <!-- lecture goes here -->
           </div>
-        <button class="action-to-next-screen">Let's Crack On</button></div>
+        <button class="action-to-next-screen">CONTINUE</button></div>
       </div>
     </div>
     <div class="screen screen-alloc">
@@ -216,11 +221,16 @@
           <h2><span class='name'>TOTAL</span> <span class="wd wd-total">32</span></h2>
 
           <p class='alloc-error' style="color:red;margin:0px;">You have exceeded your water allocation. Please select an ingredient to change.</p>
-          <button class="action-to-next-screen redeem">REDEEM</button>
+          <button class="redeem">REDEEM</button>
         </div>
         
       </div>
-      <div class="wd-alloc"><span class='wd-spent'>0</span> of <span class="wd-of">152</span></div>
+      <div class="top-right-tab">
+        <div class="wd-alloc">
+          <span class='wd-spent'>0</span> of <span class="wd-of">152</span>
+        </div>
+        <div class='timer'>2:00</div>
+      </div>
       <ul class="breadcrumbs"><li>Checkout</li></ul>
       <!--div class="screen screen-outro">
         <div class="layer" style="opacity:0.2;background-image: url(./globe-orange.gif)"></div>
