@@ -22,7 +22,7 @@ ScreenShop = function($s,def,utils){
       var $ing = $('<div class="ingredient">\
         <div class="ingredient-img" style="background-image:url('+l.list[i].img+')"></div>\
         <h2><span class="name">'+l.list[i].name+'</span> <span class="wd">'+toWD(l.list[i].wd)+'</span></h2>\
-        <p>'+l.list[i].d+'</p>\
+        <p style="white-space:nowrap;">'+l.list[i].d+'</p>\
         <button></button>\
       </div>').appendTo($p);
 
@@ -68,7 +68,11 @@ ScreenShop = function($s,def,utils){
 
     var alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     var code = '';
-    for(var n in selections) code += (selections[n].n != undefined)?alphabet[selections[n].n]:'Z';
+    var sub = isTimeUp?'X':'Z';
+
+    for(var n in selections) code += (selections[n].n != undefined)?alphabet[selections[n].n]:sub;
+
+    if(isTimeUp && wdSpend>utils.alloc) code = 'XXX';
 
     if(isTimeUp == true) $modal.find('h2').html('Your time has elapsed.<br>Your personal Canapé Code is');
     else $modal.find('h2').html('Your personal Canapé Code is');
