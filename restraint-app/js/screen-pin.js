@@ -28,7 +28,8 @@ ScreenPin = function($s,def,utils){
 
    var scope = this;
    if(iPin==PIN_LENGTH){
-      var code = $pins.text();
+      var code = $pins.text().toUpperCase();
+      
       var isProfile;
       for(var i in def.profiles){
         if(def.profiles[i].code == code) isProfile = def.profiles[i];
