@@ -18,15 +18,16 @@ ScreenPin = function($s,def,utils){
   $("<button>").appendTo($k).text('←').click(onPinBack);
 
   var iPin = 0;
+  var PIN_LENGTH = 7;
 
   function onPin(){
    $pins.eq(iPin).text( $(this).text() ).removeClass('focus');
    iPin++;
-   if(iPin > 6) iPin = 6;
+   if(iPin > PIN_LENGTH) iPin = PIN_LENGTH;
    $pins.eq(iPin).addClass('focus');
 
    var scope = this;
-   if(iPin==6){
+   if(iPin==PIN_LENGTH){
       var code = $pins.text();
       var isProfile;
       for(var i in def.profiles){

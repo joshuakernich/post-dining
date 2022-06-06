@@ -68,7 +68,7 @@ ScreenShop = function($s,def,utils){
 
     var alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     var code = '';
-    var sub = isTimeUp?'X':'Z';
+    var sub = (isTimeUp == true)?'X':'O';
 
     for(var n in selections) code += (selections[n].n != undefined)?alphabet[selections[n].n]:sub;
 

@@ -3,7 +3,7 @@ function makeDescription(LitresPerKG,WDPerGram,grams){
 }
 
 var profiles = [
-  { first:'Tester', last:'Testings', dob:'42804', age:33, occ:'app tester', code:'123456' },
+  { first:'Tester', last:'Testings', dob:'42804', age:33, occ:'app tester', code:'1234567' },
   { first:'Nigel', last:'Ilunga', dob:'42804', age:33, occ:'Product designer - Youth Market Sector', code:'ILU0310' },
   { first:'Susie', last:'Flan-Corbett', dob:'17-02-2015', age:35, occ:'Engineer - Household Appliances Team', code:'FLA1702' },
   { first:'Eric', last:'Boon', dob:'28-04-2029', age:21, occ:'Student intern', code:'BOO0506' },
