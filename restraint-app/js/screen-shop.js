@@ -43,7 +43,7 @@ ScreenShop = function($s,def,utils){
   if(def.doCodeGen){
     $modal = $('<div class="layer shop-code-modal">').appendTo($s).hide();
     var $box = $('<div class="box">').appendTo($modal);
-    $box.html("<h2>Your personal Canapé Code is</h2><h1 class='canape-code'>ZZZ</h1>");
+    $box.html("<h2>Your Personalised Nutrient Boost Code is</h2><h1 class='canape-code'>ZZZ</h1>");
     $('<button>Finish</button>').appendTo($box).click(function(){
       utils.toNextScreen(this);});
     $s.find('.redeem').click(toCodeModal);
