@@ -78,8 +78,8 @@ var allocations = [
 DATA.SHOW = [
   {type:'screen-pin',profiles:profiles},
   {type:'screen-lecture', copy:'<p>Hello there,</p>\
-<p>Welcome to the Global Water Allocation Trust Kiosk.</p>\
-<p>Today, you will be granted the privelege to digitally construct and redeem a socially responsible canapé.</p>\
+<p>Welcome to the Staff Nutrition Allocation Station.</p>\
+<p>Today, you will be granted the privelege to digitally construct and redeem a personalised, mid-meal nutrient boost.</p>\
 <p>Your compliance is mandatory.</p>'},
   {type:'screen-alloc', allocations:allocations },
   {type:'screen-shop',timer:120,doCodeGen:true,layers:[
