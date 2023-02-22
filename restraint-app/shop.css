@@ -108,6 +108,10 @@
   background: rgba(230,230,230,0.75);
 }
 
+.shop-code-modal h2, .shop-code-modal h3{
+  margin: 20px 0px;
+}
+
 .canape-code{
   background: var(--col-a);
   color: white;

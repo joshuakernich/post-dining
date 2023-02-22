@@ -43,7 +43,7 @@ ScreenShop = function($s,def,utils){
   if(def.doCodeGen){
     $modal = $('<div class="layer shop-code-modal">').appendTo($s).hide();
     var $box = $('<div class="box">').appendTo($modal);
-    $box.html("<h2>Your Personalised Nutrient Boost Code is</h2><h1 class='canape-code'>ZZZ</h1>");
+    $box.html("<h2>Your Personalised Nutrient Boost Code is</h2><h1 class='canape-code'>ZZZ</h1><h3>Please take this code to the service counter to receive your canapé.</h3>");
     $('<button>Finish</button>').appendTo($box).click(function(){
       utils.toNextScreen(this);});
     $s.find('.redeem').click(toCodeModal);
@@ -80,7 +80,7 @@ ScreenShop = function($s,def,utils){
     $modal.find('.canape-code').text(code);
     $modal.show();
 
-    utils.utter($modal.find('h2').text() + '...' + code.split('').join('...'));
+    utils.utter($modal.find('h2').text() + '...' + code.split('').join('...') + '...' + $modal.find('h3').text());
   }
 
   function toNextPage(scope){
